@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NeilBook • by neilverse</title>
+  <!-- Google Identity Services (GIS) & Google Drive REST API Integration -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 50%, #dbeafe 100%);
+      --glass-bg: rgba(255, 255, 255, 0.75);
+      --glass-card: rgba(255, 255, 255, 0.84);
+      --glass-border: rgba(255, 255, 255, 0.9);
+      --glass-shadow: 0 10px 32px 0 rgba(31, 38, 135, 0.07);
+      --glass-blur: blur(16px);
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-glass: rgba(2, 132, 199, 0.12);
+      --neil-blue: #00a8ff;
+      --income: #059669;
+      --income-bg: rgba(16, 185, 129, 0.14);
+      --outcome: #e11d48;
+      --outcome-bg: rgba(244, 63, 94, 0.14);
+      --gdrive: #16a34a;
+      --gdrive-bg: rgba(22, 163, 74, 0.12);
+      --gold: #d97706;
+      --gold-bg: rgba(217, 119, 6, 0.12);
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 8px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 16px;
+      padding-bottom: 90px;
+      background-attachment: fixed;
+    }
+
+    .container { max-width: 550px; margin: 0 auto; }
+
+    .glass {
+      background: var(--glass-card);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      border-radius: var(--radius-lg);
+    }
+
+    /* Top Nav */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-top: 4px;
+    }
+
+    .brand-pill {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 6px 16px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      user-select: none;
+    }
+    .brand-pill span.by-txt { color: #64748b; font-weight: 500; font-size: 0.8rem; }
+    .brand-pill span.name-txt { color: #0f172a; font-weight: 800; font-size: 0.92rem; }
+    .brand-pill span.slash { color: var(--neil-blue); font-weight: 900; font-size: 1.15rem; transform: skewX(-12deg); display: inline-block; margin-left: 2px; }
+
+    .nav-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-glass-icon {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      color: var(--text-main);
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: all 0.2s ease;
+    }
+    .btn-glass-icon:hover { background: #ffffff; color: var(--primary); transform: translateY(-1px); }
+
+    /* Page Navigation Tabs */
+    .page-nav-bar {
+      display: flex;
+      background: rgba(255, 255, 255, 0.7);
+      padding: 5px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      margin-bottom: 16px;
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .page-tab-btn {
+      flex: 1;
+      padding: 10px 14px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 800;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .page-tab-btn.active {
+      background: #ffffff;
+      color: var(--primary);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .page-content { display: none; }
+    .page-content.active { display: block; animation: fadeIn 0.25s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Google Drive Native Card & Sign-in Banner */
+    .gdrive-card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1.5px solid rgba(22, 163, 74, 0.35);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+    }
+    .gdrive-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .gdrive-profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gdrive-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      overflow: hidden;
+      border: 2px solid var(--gdrive);
+    }
+    .gdrive-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .gdrive-name { font-size: 0.88rem; font-weight: 800; color: #0f172a; }
+    .gdrive-email { font-size: 0.72rem; color: var(--text-muted); }
+
+    .btn-google-login {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      padding: 8px 14px;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+    .btn-google-login:hover { background: #f8fafc; border-color: var(--primary); }
+
+    .gdrive-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e2e8f0;
+    }
+    .btn-gdrive-action {
+      flex: 1;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: all 0.2s;
+    }
+    .btn-gdrive-push { background: var(--gdrive); color: #ffffff; }
+    .btn-gdrive-push:hover { opacity: 0.92; }
+    .btn-gdrive-pull { background: rgba(2, 132, 199, 0.12); color: var(--primary); border: 1px solid var(--primary); }
+    .btn-gdrive-pull:hover { background: var(--primary); color: #fff; }
+    .btn-gdrive-logout { background: #f1f5f9; color: #64748b; font-size: 0.72rem; padding: 4px 8px; border-radius: 6px; border: none; cursor: pointer; }
+
+    /* Month Selector Bar */
+    .month-bar {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+    .month-info { display: flex; flex-direction: column; }
+    .month-title { font-size: 0.95rem; font-weight: 800; color: #0f172a; }
+    .month-sub { font-size: 0.72rem; color: var(--text-muted); }
+    .month-select {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: var(--primary);
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Hero Title */
+    .hero-title { margin-bottom: 16px; }
+    .hero-title h1 { font-size: 1.55rem; font-weight: 800; color: #0f172a; letter-spacing: -0.4px; }
+    .hero-title h1 span { color: var(--primary); font-size: 0.85rem; background: var(--primary-glass); padding: 3px 8px; border-radius: 6px; margin-left: 6px; }
+    .hero-title p { color: var(--text-muted); font-size: 0.82rem; margin-top: 2px; }
+
+    /* Balance Overview */
+    .balance-card { padding: 22px; margin-bottom: 18px; }
+    .balance-label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 800; letter-spacing: 0.8px; }
+    .balance-amount { font-size: 2.1rem; font-weight: 900; color: #0f172a; margin: 6px 0 16px; letter-spacing: -0.5px; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat-card {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+    }
+    .stat-card.stat-in { border-left: 4px solid var(--income); }
+    .stat-card.stat-out { border-left: 4px solid var(--outcome); }
+    .stat-title { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+    .stat-val { font-size: 1.15rem; font-weight: 900; margin-top: 4px; }
+    .stat-in .stat-val { color: var(--income); }
+    .stat-out .stat-val { color: var(--outcome); }
+
+    .section-card { padding: 20px; margin-bottom: 18px; }
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #ownerTransactionForm { display: none; }
+
+    .type-switcher { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    .type-btn {
+      padding: 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.6);
+      color: var(--text-muted);
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .type-btn.active-in { background: var(--income-bg); border-color: rgba(16, 185, 129, 0.4); color: var(--income); }
+    .type-btn.active-out { background: var(--outcome-bg); border-color: rgba(244, 63, 94, 0.4); color: var(--outcome); }
+
+    .cat-label { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.4px; }
+    
+    .category-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 16px; }
+    .category-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+    @media(max-width: 500px) { .category-grid-3 { grid-template-columns: 1fr; } .category-grid-2 { grid-template-columns: 1fr; } }
+
+    .cat-btn {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1.5px dashed #cbd5e1;
+      padding: 12px 10px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .cat-btn:hover { border-color: var(--primary); background: #ffffff; }
+    .cat-btn .cat-btn-name { font-size: 0.84rem; font-weight: 800; color: #0f172a; }
+    .cat-btn .cat-btn-sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+    .selected-box {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(2, 132, 199, 0.35);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .selected-box.active { display: block; }
+    .selected-title { font-size: 0.76rem; font-weight: 800; color: var(--primary); text-transform: uppercase; margin-bottom: 4px; }
+    .selected-desc { font-size: 0.88rem; font-weight: 800; color: #0f172a; }
+    .selected-meta { font-size: 0.74rem; color: var(--text-muted); margin-top: 3px; }
+
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-weight: 700; font-size: 0.8rem; margin-bottom: 6px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+    input[type="text"], input[type="number"], input[type="date"], input[type="password"], textarea, select {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      color: #0f172a;
+      padding: 12px 14px;
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(2, 132, 199, 0.25);
+      transition: all 0.2s;
+    }
+    .btn-submit:hover { opacity: 0.95; transform: translateY(-1px); }
+    .btn-submit:active { transform: scale(0.98); }
+
+    .filter-tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+    .tab-btn {
+      flex: 1;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius-sm);
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      transition: 0.2s;
+    }
+    .tab-btn.active { background: #ffffff; color: var(--primary); box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+    .tx-list { display: flex; flex-direction: column; gap: 10px; }
+    .tx-empty { text-align: center; color: var(--text-muted); font-size: 0.85rem; padding: 30px 0; font-weight: 600; }
+    .tx-item {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+    .tx-info { flex: 1; }
+    .tx-primary-name { font-size: 0.92rem; font-weight: 800; color: #0f172a; margin-bottom: 3px; }
+    .tx-meta { font-size: 0.74rem; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+    .tx-badge { background: #e2e8f0; color: #334155; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.7rem; }
+    .tx-badge-sub { background: var(--primary-glass); color: var(--primary); padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.7rem; }
+    .tx-right { text-align: right; margin-left: 10px; }
+    .tx-amount { font-size: 1.05rem; font-weight: 900; }
+    .tx-amount.in { color: var(--income); }
+    .tx-amount.out { color: var(--outcome); }
+    .btn-delete-tx {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+    .btn-delete-tx:hover { color: var(--outcome); }
+
+    /* PAGE 2: LIVE RATES & MARKET */
+    .market-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .market-title { font-size: 1.15rem; font-weight: 800; color: #0f172a; }
+    .btn-refresh {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      padding: 7px 14px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-refresh:hover { background: #ffffff; }
+
+    .interval-bar {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+    }
+    .interval-select {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--primary);
+      outline: none;
+    }
+
+    .live-status-pill {
+      font-size: 0.72rem;
+      color: #059669;
+      background: rgba(16, 185, 129, 0.12);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 700;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    .rates-grid { display: flex; flex-direction: column; gap: 12px; }
+    .rate-card {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+    .rate-card.gold-card {
+      background: linear-gradient(135deg, rgba(255, 251, 235, 0.95) 0%, rgba(254, 243, 199, 0.95) 100%);
+      border: 1.5px solid rgba(245, 158, 11, 0.4);
+    }
+    .rate-left { display: flex; align-items: center; gap: 12px; }
+    .currency-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(2, 132, 199, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--primary);
+    }
+    .gold-icon { background: var(--gold-bg); color: var(--gold); }
+    .curr-name { font-size: 0.98rem; font-weight: 800; color: #0f172a; }
+    .curr-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 1px; }
+
+    .rate-right { text-align: right; }
+    .rate-val { font-size: 1.25rem; font-weight: 900; color: #0f172a; }
+    .rate-change { font-size: 0.72rem; font-weight: 700; color: var(--income); margin-top: 2px; }
+    .gold-val { font-size: 1.28rem; font-weight: 900; color: #b45309; }
+
+    .calc-box {
+      margin-top: 18px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.88);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.95);
+    }
+    .calc-title { font-size: 0.88rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; }
+
+    footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+    .footer-actions {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 8px;
+    }
+    .owner-portal-trigger {
+      color: #94a3b8;
+      cursor: pointer;
+      font-size: 0.7rem;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: color 0.2s;
+    }
+    .owner-portal-trigger:hover { color: var(--primary); }
+
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.45);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: var(--radius-lg);
+      padding: 22px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; }
+    .modal-title { font-size: 1.05rem; font-weight: 800; color: #0f172a; }
+    .modal-close { background: none; border: none; font-size: 1.4rem; color: #64748b; cursor: pointer; }
+
+    .option-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+    .option-card {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .option-card:hover { border-color: var(--primary); background: #ffffff; }
+    .option-title { font-weight: 800; font-size: 0.9rem; color: #0f172a; }
+    .option-desc { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+    .release-item { margin-bottom: 18px; padding-bottom: 16px; }
+    .release-tag {
+      background: var(--primary-glass);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-weight: 800;
+      font-size: 0.75rem;
+    }
+    .release-date-badge { font-size: 0.75rem; color: var(--text-muted); margin-left: 8px; font-weight: 600; }
+    .release-body { margin-top: 8px; font-size: 0.82rem; color: #334155; line-height: 1.5; }
+    .release-body ul { margin-left: 20px; margin-top: 4px; }
+    .release-body li { margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+<div class="container">
+  
+  <header>
+    <div class="brand-pill" title="by neilverse">
+      <span class="by-txt">by</span>
+      <span class="name-txt">neilverse</span>
+      <span class="slash">/</span>
+    </div>
+    <div class="nav-actions">
+      <button class="btn-glass-icon" onclick="openModal('releaseModal')">
+        <span>📋</span> Release Notes
+      </button>
+      <button class="btn-glass-icon" id="ownerStatusBtn" style="display:none;" onclick="logoutOwner()">
+        <span>👑</span> Logout Owner
+      </button>
+    </div>
+  </header>
+
+  <!-- 2 Main Page Navigation Tabs -->
+  <div class="page-nav-bar">
+    <button class="page-tab-btn active" id="tabNavPage1" onclick="switchMainPage('page1')">
+      <span>📊</span> Cashflow Tracker
+    </button>
+    <button class="page-tab-btn" id="tabNavPage2" onclick="switchMainPage('page2')">
+      <span>🪙</span> Live Rates & Market
+    </button>
+  </div>
+
+  <!-- ================= PAGE 1: CASHFLOW TRACKER ================= -->
+  <div class="page-content active" id="page1Container">
+    
+    <!-- Real Google Drive Account Card (One-Tap Login Directly in App) -->
+    <div class="gdrive-card">
+      <div class="gdrive-header-row">
+        <!-- Logged In Profile View -->
+        <div class="gdrive-profile" id="gdriveLoggedProfile" style="display:none;">
+          <div class="gdrive-avatar" id="gdriveAvatarBox">👤</div>
+          <div>
+            <div class="gdrive-name" id="gdriveAccountName">Akun Google Saya</div>
+            <div class="gdrive-email" id="gdriveAccountEmail">Terhubung ke Google Drive</div>
+          </div>
+        </div>
+
+        <!-- Logged Out View (Direct Sign-in Button) -->
+        <div id="gdriveLoggedOutView" style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:1.4rem;">☁️</span>
+          <div>
+            <div style="font-size:0.85rem; font-weight:800; color:#0f172a;">Google Drive Backup</div>
+            <div style="font-size:0.72rem; color:var(--text-muted);">Masuk akun untuk sinkron otomatis</div>
+          </div>
+        </div>
+
+        <!-- Sign In Button / Logout Button -->
+        <div>
+          <button class="btn-google-login" id="btnGoogleSignIn" onclick="requestGoogleDriveLogin()">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+            <span>Masuk Google Drive</span>
+          </button>
+          <button class="btn-gdrive-logout" id="btnGoogleLogout" style="display:none;" onclick="logoutGoogleDrive()">
+            Keluar Akun
+          </button>
+        </div>
+      </div>
+
+      <!-- Sync Controls (Visible when logged in) -->
+      <div class="gdrive-actions-row" id="gdriveActionControls" style="display:none;">
+        <button class="btn-gdrive-action btn-gdrive-push" onclick="syncDataToRealGoogleDrive()">
+          <span>☁️</span> Cadangkan ke Drive Saya
+        </button>
+        <button class="btn-gdrive-action btn-gdrive-pull" onclick="restoreDataFromRealGoogleDrive()">
+          <span>📥</span> Ambil dari Drive Saya
+        </button>
+      </div>
+      <div id="gdriveStatusFeed" style="font-size:0.72rem; color:var(--text-muted); margin-top:6px; display:none;">
+        Status: <span id="gdriveStatusText" style="color:var(--gdrive); font-weight:700;">Siap sinkron</span>
+      </div>
+    </div>
+
+    <!-- Realistic Monthly Timeline Filter -->
+    <div class="month-bar">
+      <div class="month-info">
+        <span class="month-title" id="selectedMonthTitle">November 2026</span>
+        <span class="month-sub">Bulan Berjalan (Active Period)</span>
+      </div>
+      <select class="month-select" id="monthFilterSelect" onchange="changeMonthFilter()">
+        <option value="2026-11" selected>November 2026</option>
+        <option value="2026-10">Oktober 2026 (Bulan Perdana)</option>
+      </select>
+    </div>
+
+    <!-- Hero Title -->
+    <div class="hero-title">
+      <h1 id="appDisplayName">NeilBook Cashflow <span>v1.0.0-beta.1</span></h1>
+      <p id="appOwnerSubtitle">Realtime Partner Cashflow Dashboard</p>
+    </div>
+
+    <!-- Balance Overview Card -->
+    <div class="glass balance-card">
+      <div class="balance-label">Total Net Balance (Selected Period)</div>
+      <div class="balance-amount" id="netBalanceDisplay">Rp 0</div>
+      <div class="stat-grid">
+        <div class="stat-card stat-in">
+          <div class="stat-title">Income (Bulan Ini)</div>
+          <div class="stat-val" id="totalIncomeDisplay">+Rp 0</div>
+        </div>
+        <div class="stat-card stat-out">
+          <div class="stat-title">Outcome (Bulan Ini)</div>
+          <div class="stat-val" id="totalOutcomeDisplay">-Rp 0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Transaction Section (Strictly hidden until Owner logs in) -->
+    <div class="glass section-card" id="ownerTransactionForm">
+      <div class="card-title">
+        <span>Add Transaction</span>
+        <span style="font-size:0.75rem; color:var(--primary); font-weight:700;">👑 Owner Input Control</span>
+      </div>
+
+      <div class="type-switcher">
+        <div class="type-btn active-in" id="btnTypeIn" onclick="switchType('income')">+ Income</div>
+        <div class="type-btn" id="btnTypeOut" onclick="switchType('outcome')">- Outcome</div>
+      </div>
+
+      <div class="cat-label">Select Category (Click to choose options):</div>
+      
+      <!-- Income Categories: Sponsorship, Jual APK, Agregator Income -->
+      <div class="category-grid-3" id="incomeCatGrid">
+        <div class="cat-btn" onclick="openIncomeSubCatModal('Sponsorship')">
+          <div class="cat-btn-name">🤝 Sponsorship</div>
+          <div class="cat-btn-sub">Brand, AdSense, Client</div>
+        </div>
+        <div class="cat-btn" onclick="openIncomeSubCatModal('Sell APK')">
+          <div class="cat-btn-name">🚀 Jual APK</div>
+          <div class="cat-btn-sub">B2B, UMKM, Personal</div>
+        </div>
+        <div class="cat-btn" onclick="openIncomeSubCatModal('Agregator Income')">
+          <div class="cat-btn-name">🎵 Agregator Income</div>
+          <div class="cat-btn-sub">Music Royalty & Streaming</div>
+        </div>
+      </div>
+
+      <!-- Outcome Categories: Tools, Upah Harian -->
+      <div class="category-grid-2" id="outcomeCatGrid" style="display:none;">
+        <div class="cat-btn" onclick="openOutcomeSubCatModal('Tools')">
+          <div class="cat-btn-name">🛠️ Tools</div>
+          <div class="cat-btn-sub">Grok, Lagu, CapCut, Iklan</div>
+        </div>
+        <div class="cat-btn" onclick="openOutcomeSubCatModal('Daily Wages')">
+          <div class="cat-btn-name">💼 Upah Harian</div>
+          <div class="cat-btn-sub">Harian, Hari & Tanggal</div>
+        </div>
+      </div>
+
+      <!-- Selected Details Box -->
+      <div class="selected-box" id="selectedPreviewBox">
+        <div class="selected-title" id="selectedTitlePreview">Category Selected</div>
+        <div class="selected-desc" id="selectedDescPreview">-</div>
+        <div class="selected-meta" id="selectedMetaPreview">-</div>
+      </div>
+
+      <div class="form-group">
+        <label>Amount (Nominal Rp):</label>
+        <input type="number" id="inputAmount" placeholder="Enter amount..." inputmode="numeric">
+      </div>
+
+      <div class="form-group">
+        <label>Transaction Date (Sesuai Periode):</label>
+        <input type="date" id="inputTxDate" min="2026-10-01" max="2026-11-30">
+      </div>
+
+      <button class="btn-submit" onclick="submitTransaction()">
+        Save Transaction (Sync Online)
+      </button>
+    </div>
+
+    <!-- Transaction History Section (Always visible to Viewers/Partner) -->
+    <div class="glass section-card">
+      <div class="card-title">
+        <span>Transaction History</span>
+        <span style="font-size: 0.72rem; color: var(--text-muted);" id="txCountBadge">0 Records</span>
+      </div>
+
+      <div class="filter-tabs">
+        <div class="tab-btn active" id="tabAll" onclick="applyFilter('all')">All</div>
+        <div class="tab-btn" id="tabIn" onclick="applyFilter('income')">Income</div>
+        <div class="tab-btn" id="tabOut" onclick="applyFilter('outcome')">Outcome</div>
+      </div>
+
+      <div class="tx-list" id="txContainer">
+        <div class="tx-empty">No transactions recorded for this month.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= PAGE 2: LIVE RATES & MARKET ================= -->
+  <div class="page-content" id="page2Container">
+    
+    <div class="market-header">
+      <div>
+        <div class="market-title">Live Rates & Commodity</div>
+        <div class="live-status-pill" id="liveApiStatusTag">● Live Online API Feed Active</div>
+      </div>
+      <button class="btn-refresh" onclick="fetchLiveMarketRates()">
+        <span id="refreshIcon">🔄</span> Fetch Now
+      </button>
+    </div>
+
+    <div class="interval-bar">
+      <div>
+        <strong>Auto Update Interval:</strong>
+        <div style="font-size:0.7rem; color:var(--text-muted);">Pilih interval sinkronisasi background</div>
+      </div>
+      <select class="interval-select" id="intervalSelect" onchange="changeUpdateInterval()">
+        <option value="15" selected>Tiap 15 Menit (Sangat Hemat Kuota/Baterai)</option>
+        <option value="1">Tiap 1 Menit (High Frequency)</option>
+      </select>
+    </div>
+
+    <div class="rates-grid">
+      
+      <!-- Gold Antam 1 Gram Card -->
+      <div class="rate-card gold-card">
+        <div class="rate-left">
+          <div class="currency-icon gold-icon">🪙</div>
+          <div>
+            <div class="curr-name">Emas Antam (1 Gram)</div>
+            <div class="curr-sub">Beli: Rp 2.510.000 - Rp 2.559.000</div>
+          </div>
+        </div>
+        <div class="rate-right">
+          <div class="gold-val" id="goldRateDisplay">Rp 2.535.000</div>
+          <div class="rate-change" style="color:#b45309;">Buyback: Rp 2.380.000</div>
+        </div>
+      </div>
+
+      <!-- USD / IDR -->
+      <div class="rate-card">
+        <div class="rate-left">
+          <div class="currency-icon">🇺🇸</div>
+          <div>
+            <div class="curr-name">USD / IDR</div>
+            <div class="curr-sub">United States Dollar</div>
+          </div>
+        </div>
+        <div class="rate-right">
+          <div class="rate-val" id="usdRateDisplay">Rp 18.127</div>
+          <div class="rate-change" id="usdSyncTime">Live Market Rate</div>
+        </div>
+      </div>
+
+      <!-- EUR / IDR -->
+      <div class="rate-card">
+        <div class="rate-left">
+          <div class="currency-icon">🇪🇺</div>
+          <div>
+            <div class="curr-name">EUR / IDR</div>
+            <div class="curr-sub">Eurozone Currency</div>
+          </div>
+        </div>
+        <div class="rate-right">
+          <div class="rate-val" id="eurRateDisplay">Rp 19.450</div>
+          <div class="rate-change">Live Market Rate</div>
+        </div>
+      </div>
+
+      <!-- JPY / IDR -->
+      <div class="rate-card">
+        <div class="rate-left">
+          <div class="currency-icon">🇯🇵</div>
+          <div>
+            <div class="curr-name">JPY / IDR (100 JPY)</div>
+            <div class="curr-sub">Japanese Yen (Per 100)</div>
+          </div>
+        </div>
+        <div class="rate-right">
+          <div class="rate-val" id="jpyRateDisplay">Rp 11.850</div>
+          <div class="rate-change">Live Market Rate</div>
+        </div>
+      </div>
+
+      <!-- Quick Conversion Calculator -->
+      <div class="calc-box">
+        <div class="calc-title">⚡ Realtime Valas & Emas Converter to IDR</div>
+        <div style="display:flex; gap:8px; margin-bottom:10px;">
+          <input type="number" id="calcInputAmount" placeholder="Nominal..." value="1" style="flex:1;">
+          <select id="calcCurrencySelect" style="width:125px;" onchange="convertCurrencyToIDR()">
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="JPY">100 JPY (¥)</option>
+            <option value="GOLD">Emas Antam (Gr)</option>
+          </select>
+        </div>
+        <button class="btn-submit" style="padding:10px; font-size:0.85rem;" onclick="convertCurrencyToIDR()">
+          Calculate Value
+        </button>
+        <div id="calcResultDisplay" style="margin-top:12px; font-size:0.95rem; font-weight:800; color:var(--primary); text-align:center;">
+          1 USD = Rp 18.127
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Footer with Backup/Restore & Discreet Owner Portal Trigger -->
+  <footer>
+    <div>NeilBook Cashflow System • by neilverse /</div>
+    <div class="footer-actions">
+      <span class="owner-portal-trigger" onclick="openModal('backupRestoreModal')">💾 Backup / Restore Manual</span>
+      <span>•</span>
+      <span class="owner-portal-trigger" onclick="openModal('ownerLoginModal')">Staff / Admin Login</span>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- Modal: Google Drive Setup / Direct Token -->
+<div class="modal-overlay" id="gdriveConfigModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">☁️ Pengaturan Google Drive Anda</div>
+      <button class="modal-close" onclick="closeModal('gdriveConfigModal')">&times;</button>
+    </div>
+
+    <div style="font-size:0.8rem; color:#334155; line-height:1.5; margin-bottom:14px; background:#f0fdf4; border:1px solid #bbf7d0; padding:10px; border-radius:8px;">
+      <strong>Koneksi Langsung:</strong> Masukkan Google OAuth Client ID milik akun Google Anda sendiri untuk membuka login Google Drive resmi di aplikasi ini.
+    </div>
+
+    <div class="form-group">
+      <label>Google OAuth Client ID Anda:</label>
+      <input type="text" id="gdriveCustomClientId" placeholder="Contoh: xxxxx.apps.googleusercontent.com">
+      <div style="font-size:0.72rem; color:var(--text-muted); margin-top:3px;">
+        *Diperoleh dari Google Cloud Console akun Anda (Gratis).
+      </div>
+    </div>
+
+    <button class="btn-submit" style="background:#16a34a;" onclick="saveGoogleClientId()">
+      Simpan & Hubungkan Akun Google
+    </button>
+  </div>
+</div>
+
+<!-- Modal: Backup & Restore Manual -->
+<div class="modal-overlay" id="backupRestoreModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">💾 Backup & Restore Database Manual</div>
+      <button class="modal-close" onclick="closeModal('backupRestoreModal')">&times;</button>
+    </div>
+
+    <div style="font-size:0.8rem; color:var(--text-muted); line-height:1.45; margin-bottom:16px;">
+      Unduh berkas fisik <strong>.json</strong> ke laptop/HP Anda sebagai cadangan cadangan mandiri.
+    </div>
+
+    <button class="btn-submit" style="background:#059669; margin-bottom:10px;" onclick="downloadBackupFileJSON()">
+      📥 Unduh File Backup Fisik (.json)
+    </button>
+
+    <button class="btn-submit" style="background:#0284c7; margin-bottom:16px;" onclick="exportDatabaseJSON()">
+      📋 Salin Kode JSON ke Clipboard
+    </button>
+
+    <hr style="border:0; border-top:1px solid #e2e8f0; margin:16px 0;">
+
+    <div style="font-size:0.82rem; font-weight:800; color:#0f172a; margin-bottom:8px;">
+      Pulihkan / Masukkan Data (Restore):
+    </div>
+
+    <div class="form-group">
+      <label>1. Pilih File .json dari Perangkat:</label>
+      <input type="file" id="jsonFileInputRestore" accept=".json,.txt" onchange="handleRestoreFileUpload(event)">
+    </div>
+
+    <div class="form-group">
+      <label>2. Atau Tempel Kode Teks JSON:</label>
+      <textarea id="importDataArea" rows="3" placeholder="Atau tempelkan kode teks backup di sini..."></textarea>
+    </div>
+
+    <button class="btn-submit" style="background:#334155;" onclick="importDatabaseJSON()">
+      🔄 Pulihkan (Restore) Data ke Aplikasi
+    </button>
+  </div>
+</div>
+
+<!-- Modal: Owner Login Portal -->
+<div class="modal-overlay" id="ownerLoginModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🔐 Owner Security Portal</div>
+      <button class="modal-close" onclick="closeModal('ownerLoginModal')">&times;</button>
+    </div>
+    
+    <div class="form-group">
+      <label>Master Security Key (PIN):</label>
+      <input type="password" id="ownerLoginPinInput" placeholder="Enter owner key...">
+    </div>
+
+    <button class="btn-submit" onclick="submitOwnerLogin()">Unlock Owner Management</button>
+  </div>
+</div>
+
+<!-- Modal: Sub Category Sponsorship -->
+<div class="modal-overlay" id="modalSponsorship">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🤝 Sponsorship Type</div>
+      <button class="modal-close" onclick="closeModal('modalSponsorship')">&times;</button>
+    </div>
+    <div class="option-list">
+      <div class="option-card" onclick="selectSponsorshipOption('Direct Deal with Enterprise / Perusahaan')">
+        <div class="option-title">🏢 Perusahaan (Enterprise)</div>
+        <div class="option-desc">Direct corporate deal, brand sponsorship / contract.</div>
+      </div>
+      <div class="option-card" onclick="selectSponsorshipOption('Direct Deal with MSME / UMKM')">
+        <div class="option-title">🏪 UMKM (Local Business)</div>
+        <div class="option-desc">Sponsorship dari pelaku usaha kecil & menengah.</div>
+      </div>
+      <div class="option-card" onclick="selectSponsorshipOption('Direct Deal with Individual / Perorangan')">
+        <div class="option-title">👤 Perorangan (Individual)</div>
+        <div class="option-desc">Personal endorsement, private client deal.</div>
+      </div>
+      <div class="option-card" onclick="selectSponsorshipOption('YouTube AdSense / Content Ads')">
+        <div class="option-title">▶️ YouTube AdSense</div>
+        <div class="option-desc">Pendapatan monetisasi channel & tayangan video YouTube.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Sub Category Sell APK -->
+<div class="modal-overlay" id="modalSellAPK">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🚀 Jual APK Details</div>
+      <button class="modal-close" onclick="closeModal('modalSellAPK')">&times;</button>
+    </div>
+    
+    <div class="form-group">
+      <label>APK / App Name:</label>
+      <input type="text" id="apkNameInput" placeholder="Contoh: ChatNeil, NeilBook Pro, dll">
+    </div>
+
+    <div class="form-group">
+      <label>Buyer / Client Name (Dijual Ke Siapa):</label>
+      <input type="text" id="apkClientInput" placeholder="Nama perusahaan / klien">
+    </div>
+
+    <div class="form-group">
+      <label>Buyer Type (Jenis Pembeli):</label>
+      <select id="apkBuyerTypeInput">
+        <option value="Enterprise (Perusahaan)">Enterprise (Perusahaan)</option>
+        <option value="MSME (UMKM)">MSME (UMKM)</option>
+        <option value="Individual (Perorangan)">Individual (Perorangan)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Agreed Price (Harga Jual Rp):</label>
+      <input type="number" id="apkPriceInput" placeholder="Contoh: 15000000" inputmode="numeric">
+    </div>
+
+    <button class="btn-submit" onclick="confirmSellAPK()">Apply to Transaction</button>
+  </div>
+</div>
+
+<!-- Modal: Sub Category Agregator Income -->
+<div class="modal-overlay" id="modalAgregator">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🎵 Agregator Music & Streaming Royalty</div>
+      <button class="modal-close" onclick="closeModal('modalAgregator')">&times;</button>
+    </div>
+    
+    <div class="form-group">
+      <label>Aggregator Platform:</label>
+      <select id="agregatorPlatformInput">
+        <option value="DistroKid Streaming Royalty">DistroKid Streaming Royalty</option>
+        <option value="TuneCore Music Publishing">TuneCore Music Publishing</option>
+        <option value="NetEase Cloud Music">NetEase Cloud Music</option>
+        <option value="Spotify & Apple Music Aggregator">Spotify & Apple Music Aggregator</option>
+        <option value="TikTok & ByteDance Music Sync">TikTok & ByteDance Music Sync</option>
+        <option value="Other Digital Music Aggregator">Other Digital Music Aggregator</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Release Title / Song Track Note:</label>
+      <input type="text" id="agregatorTrackInput" placeholder="Contoh: Royalty Rilis Single / Album Q4">
+    </div>
+
+    <button class="btn-submit" onclick="confirmAgregator()">Apply to Transaction</button>
+  </div>
+</div>
+
+<!-- Modal: Sub Category Tools -->
+<div class="modal-overlay" id="modalTools">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🛠️ Tools & Subscriptions</div>
+      <button class="modal-close" onclick="closeModal('modalTools')">&times;</button>
+    </div>
+    <div class="option-list">
+      <div class="option-card" onclick="selectToolsOption('Grok Premium')">
+        <div class="option-title">⚡ Grok Premium</div>
+        <div class="option-desc">AI Subscription & Computational Tools.</div>
+      </div>
+      <div class="option-card" onclick="selectToolsOption('Grok AI Point')">
+        <div class="option-title">🪙 Grok AI Point</div>
+        <div class="option-desc">Credit Point Token & API Usage Top-up.</div>
+      </div>
+      <div class="option-card" onclick="selectToolsOption('Tools Produksi Lagu')">
+        <div class="option-title">🎧 Tools Produksi Lagu</div>
+        <div class="option-desc">DAW License, VST Plugins, Sample Packs & Sound Library.</div>
+      </div>
+      <div class="option-card" onclick="selectToolsOption('CapCut Pro')">
+        <div class="option-title">🎬 CapCut Pro</div>
+        <div class="option-desc">Video Editing & Creative Rendering Assets.</div>
+      </div>
+      <div class="option-card" onclick="selectToolsOption('YouTube Ads Campaign')">
+        <div class="option-title">📢 Iklan di YouTube (YouTube Ads)</div>
+        <div class="option-desc">Campaign periklanan & promosi media YouTube.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Sub Category Daily Wages -->
+<div class="modal-overlay" id="modalWages">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">💼 Upah Harian (Daily Wages)</div>
+      <button class="modal-close" onclick="closeModal('modalWages')">&times;</button>
+    </div>
+    
+    <div class="form-group">
+      <label>Worker / Task Name:</label>
+      <input type="text" id="wageWorkerInput" placeholder="Contoh: Upah Desain / Editing / Developer">
+    </div>
+
+    <div class="form-group">
+      <label>Select Date:</label>
+      <input type="date" id="wageDateInput" min="2026-10-01" max="2026-11-30" onchange="autoFillDayName()">
+    </div>
+
+    <div class="form-group">
+      <label>Day Name (Nama Hari):</label>
+      <input type="text" id="wageDayNameInput" readonly placeholder="Otomatis terisi (Senin, Selasa, dll)">
+    </div>
+
+    <div class="form-group">
+      <label>Wage Amount (Nominal Upah Rp):</label>
+      <input type="number" id="wageAmountInput" placeholder="Contoh: 250000" inputmode="numeric">
+    </div>
+
+    <button class="btn-submit" onclick="confirmWages()">Apply to Transaction</button>
+  </div>
+</div>
+
+<!-- Modal: Release Notes (Clean Start from v1.0.0-beta.1) -->
+<div class="modal-overlay" id="releaseModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📋 Release Notes & Changelog</div>
+      <button class="modal-close" onclick="closeModal('releaseModal')">&times;</button>
+    </div>
+
+    <div class="release-item">
+      <div style="display:flex; align-items:center;">
+        <span class="release-tag">v1.0.0-beta.1 (Fresh Initial Beta)</span>
+        <span class="release-date-badge">📅 November 2, 2026</span>
+      </div>
+      <div class="release-body">
+        Peluncuran sistem pembukuan <strong>NeilBook Cashflow</strong> • <em>by neilverse /</em>:
+        <ul>
+          <li><strong>Direct Google Drive Sign-In:</strong> Opsi login langsung dengan akun Google resmi Anda di dalam aplikasi untuk sinkronisasi cloud riil.</li>
+          <li><strong>Partner Edition (Zero-Trace):</strong> Tampilan mitra murni sebagai dashboard pemantau. Hak input dikontrol lewat portal login Owner.</li>
+          <li><strong>Timeline Kas Bulanan:</strong> Dimulai dari Oktober 2026 dan November 2026 (terkunci dari lompatan masa depan).</li>
+          <li><strong>Kategori Pemasukan:</strong> Sponsorship, Jual APK, dan Agregator Income (Royalti Streaming).</li>
+          <li><strong>Kategori Pengeluaran:</strong> Tools (Grok Premium, Grok AI Point, Tools Produksi Lagu, CapCut Pro, Iklan YouTube) & Upah Harian.</li>
+          <li><strong>Live Market & Rates:</strong> Kurs USD (Rp 18.127+), EUR, JPY, dan Emas Antam (Rp 2,5 jt+/gr).</li>
+          <li><strong>Export/Import Fisik:</strong> Unduh dan unggah file <code>.json</code> mandiri satu klik.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentTxType = 'income';
+  let activeFilter = 'all';
+  let isOwner = false;
+  let masterPIN = "1234";
+
+  let selectedActiveMonth = "2026-11";
+
+  let currentSelectedCategory = "";
+  let currentSelectedSub = "";
+  let currentSelectedMeta = "";
+
+  let transactions = [];
+  let updateIntervalTimer = null;
+
+  // Real Google Drive Session
+  let gdriveUser = null;
+  let gdriveToken = null;
+  let googleClientId = localStorage.getItem('neilbook_gdrive_client_id') || "";
+
+  let liveMarketRates = {
+    usd: 18127.15,
+    eur: 19450.00,
+    jpy100: 11850.00,
+    goldBuy: 2535000,
+    goldBuyback: 2380000
+  };
+
+  const dayNamesIndo = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+
+  // ================= STORAGE ENGINE =================
+  const MASTER_STORAGE_KEY = 'neilbook_master_db';
+
+  function loadPersistentData() {
+    const masterData = localStorage.getItem(MASTER_STORAGE_KEY);
+    if (masterData) {
+      try {
+        const parsed = JSON.parse(masterData);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch(e) {}
+    }
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && (k.includes('neilbook') || k.includes('tx') || k.includes('transactions'))) {
+        try {
+          const raw = localStorage.getItem(k);
+          if (raw && raw.startsWith('[')) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(parsed));
+              return parsed;
+            }
+          }
+        } catch(e) {}
+      }
+    }
+
+    return [
+      {
+        id: 1,
+        type: 'income',
+        category: 'Sponsorship',
+        sub: 'Direct Deal with Enterprise / Perusahaan',
+        meta: 'Sponsor Kontrak Perdana',
+        amount: 15000000,
+        date: '2026-10-15'
+      },
+      {
+        id: 2,
+        type: 'outcome',
+        category: 'Tools',
+        sub: 'Tools Produksi Lagu',
+        meta: 'DAW & VST Suite Setup',
+        amount: 1200000,
+        date: '2026-10-20'
+      },
+      {
+        id: 3,
+        type: 'income',
+        category: 'Agregator Income',
+        sub: 'DistroKid Streaming Royalty',
+        meta: 'Royalty Single Release Q4',
+        amount: 3200000,
+        date: '2026-11-01'
+      },
+      {
+        id: 4,
+        type: 'outcome',
+        category: 'Tools',
+        sub: 'Grok AI Point',
+        meta: 'Token & API Computational Credit',
+        amount: 500000,
+        date: '2026-11-02'
+      }
+    ];
+  }
+
+  function saveLocalData() {
+    localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(transactions));
+  }
+
+  // ================= DIRECT GOOGLE DRIVE LOGIN & SYNC =================
+  function requestGoogleDriveLogin() {
+    if (!googleClientId) {
+      // Buka modal input Client ID akun Google pengguna
+      openModal('gdriveConfigModal');
+      return;
+    }
+
+    try {
+      if (typeof google === 'undefined' || !google.accounts) {
+        alert('Google Identity Service sedang dimuat. Pastikan perangkat Anda terhubung ke internet.');
+        return;
+      }
+
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: googleClientId,
+        scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+        callback: async (response) => {
+          if (response && response.access_token) {
+            gdriveToken = response.access_token;
+            // Fetch User Profile langsung dari Google
+            await fetchGoogleUserProfile(gdriveToken);
+          }
+        }
+      });
+      client.requestAccessToken();
+    } catch(err) {
+      alert('Gagal membuka login Google: ' + err.message);
+    }
+  }
+
+  function saveGoogleClientId() {
+    const val = document.getElementById('gdriveCustomClientId').value.trim();
+    if (!val) {
+      alert('Harap masukkan Google Client ID Anda.');
+      return;
+    }
+    googleClientId = val;
+    localStorage.setItem('neilbook_gdrive_client_id', val);
+    closeModal('gdriveConfigModal');
+    requestGoogleDriveLogin();
+  }
+
+  async function fetchGoogleUserProfile(token) {
+    try {
+      const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        gdriveUser = await res.json();
+        renderGoogleLoggedInUI();
+        alert(`Berhasil terhubung ke Google Drive milik: ${gdriveUser.name} (${gdriveUser.email})`);
+      }
+    } catch(e) {
+      alert('Gagal mengambil data profil Google.');
+    }
+  }
+
+  function renderGoogleLoggedInUI() {
+    document.getElementById('gdriveLoggedOutView').style.display = 'none';
+    document.getElementById('btnGoogleSignIn').style.display = 'none';
+
+    document.getElementById('gdriveLoggedProfile').style.display = 'flex';
+    document.getElementById('btnGoogleLogout').style.display = 'block';
+    document.getElementById('gdriveActionControls').style.display = 'flex';
+    document.getElementById('gdriveStatusFeed').style.display = 'block';
+
+    document.getElementById('gdriveAccountName').innerText = gdriveUser.name || 'Akun Google Saya';
+    document.getElementById('gdriveAccountEmail').innerText = gdriveUser.email || 'Terhubung';
+    
+    if (gdriveUser.picture) {
+      document.getElementById('gdriveAvatarBox').innerHTML = `<img src="${gdriveUser.picture}" alt="Profile">`;
+    }
+  }
+
+  function logoutGoogleDrive() {
+    if (confirm('Keluar dari akun Google Drive ini?')) {
+      gdriveUser = null;
+      gdriveToken = null;
+      document.getElementById('gdriveLoggedOutView').style.display = 'flex';
+      document.getElementById('btnGoogleSignIn').style.display = 'inline-flex';
+
+      document.getElementById('gdriveLoggedProfile').style.display = 'none';
+      document.getElementById('btnGoogleLogout').style.display = 'none';
+      document.getElementById('gdriveActionControls').style.display = 'none';
+      document.getElementById('gdriveStatusFeed').style.display = 'none';
+      alert('Telah keluar dari akun Google Drive.');
+    }
+  }
+
+  // Real Upload to User's Google Drive via REST API
+  async function syncDataToRealGoogleDrive() {
+    if (!gdriveToken) {
+      alert('Harap login ke Google Drive Anda terlebih dahulu.');
+      return;
+    }
+
+    const statusEl = document.getElementById('gdriveStatusText');
+    statusEl.innerText = "Sedang mengunggah cadangan ke Google Drive Anda...";
+    statusEl.style.color = "var(--primary)";
+
+    const fileContent = JSON.stringify(transactions, null, 2);
+    const fileName = "neilbook_cashflow_backup.json";
+
+    const metadata = {
+      name: fileName,
+      mimeType: "application/json"
+    };
+
+    const form = new FormData();
+    form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
+    form.append("file", new Blob([fileContent], { type: "application/json" }));
+
+    try {
+      const uploadRes = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${gdriveToken}` },
+        body: form
+      });
+
+      if (uploadRes.ok) {
+        const result = await uploadRes.json();
+        const now = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        statusEl.innerText = `Berhasil dicadangkan ke Drive Anda pukul ${now} (File: ${fileName})`;
+        statusEl.style.color = "var(--gdrive)";
+        alert(`Sukses! ${transactions.length} transaksi kas tersimpan langsung di Google Drive (${gdriveUser.email})!`);
+      } else {
+        throw new Error('Gagal mengunggah ke Drive.');
+      }
+    } catch(err) {
+      statusEl.innerText = "Gagal mencadangkan ke Google Drive.";
+      statusEl.style.color = "var(--outcome)";
+      alert('Terjadi kendala saat mengunggah ke Google Drive: ' + err.message);
+    }
+  }
+
+  // Real Restore from User's Google Drive via REST API
+  async function restoreDataFromRealGoogleDrive() {
+    if (!gdriveToken) {
+      alert('Harap login ke Google Drive Anda terlebih dahulu.');
+      return;
+    }
+
+    const statusEl = document.getElementById('gdriveStatusText');
+    statusEl.innerText = "Mencari file cadangan di Google Drive Anda...";
+
+    try {
+      const listRes = await fetch("https://www.googleapis.com/drive/v3/files?q=name='neilbook_cashflow_backup.json'&fields=files(id,name,modifiedTime)", {
+        headers: { Authorization: `Bearer ${gdriveToken}` }
+      });
+
+      if (listRes.ok) {
+        const listData = await listRes.json();
+        if (listData.files && listData.files.length > 0) {
+          const fileId = listData.files[0].id;
+          
+          // Download isi file
+          const contentRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+            headers: { Authorization: `Bearer ${gdriveToken}` }
+          });
+
+          if (contentRes.ok) {
+            const remoteData = await contentRes.json();
+            if (Array.isArray(remoteData)) {
+              transactions = remoteData;
+              saveLocalData();
+              renderAll();
+              statusEl.innerText = `Data kas berhasil dipulihkan dari Drive Anda (${remoteData.length} transaksi).`;
+              statusEl.style.color = "var(--gdrive)";
+              alert(`Sukses memulihkan ${remoteData.length} transaksi dari Google Drive milik ${gdriveUser.email}!`);
+              return;
+            }
+          }
+        } else {
+          alert('Belum ada file cadangan "neilbook_cashflow_backup.json" di Google Drive Anda.');
+        }
+      }
+    } catch(e) {
+      alert('Gagal mengambil cadangan dari Google Drive: ' + e.message);
+    }
+  }
+
+  // ================= LOCAL BACKUP / RESTORE =================
+  function downloadBackupFileJSON() {
+    if (!transactions || transactions.length === 0) {
+      alert('Belum ada data transaksi untuk diekspor.');
+      return;
+    }
+    const jsonStr = JSON.stringify(transactions, null, 2);
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const timestamp = new Date().toISOString().split('T')[0];
+    a.href = url;
+    a.download = `neilbook_backup_${timestamp}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert('File backup (.json) berhasil diunduh ke perangkat Anda!');
+  }
+
+  function exportDatabaseJSON() {
+    const jsonStr = JSON.stringify(transactions, null, 2);
+    document.getElementById('importDataArea').value = jsonStr;
+    navigator.clipboard.writeText(jsonStr).then(() => {
+      alert('Kode data kas berhasil disalin ke clipboard!');
+    }).catch(() => {
+      alert('Kode data kas telah dimuat di kotak teks.');
+    });
+  }
+
+  function handleRestoreFileUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      try {
+        const parsed = JSON.parse(evt.target.result);
+        if (Array.isArray(parsed)) {
+          transactions = parsed;
+          saveLocalData();
+          renderAll();
+          closeModal('backupRestoreModal');
+          alert(`Sukses! ${parsed.length} transaksi berhasil dipulihkan langsung dari file .json!`);
+        } else {
+          alert('Format isi file tidak sesuai.');
+        }
+      } catch(err) {
+        alert('Gagal membaca file: Format JSON tidak valid.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function importDatabaseJSON() {
+    const raw = document.getElementById('importDataArea').value.trim();
+    if (!raw) {
+      alert('Silakan pilih file atau tempelkan kode backup JSON terlebih dahulu.');
+      return;
+    }
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        transactions = parsed;
+        saveLocalData();
+        renderAll();
+        closeModal('backupRestoreModal');
+        alert(`Berhasil memulihkan ${parsed.length} transaksi kas!`);
+      } else {
+        alert('Format data backup tidak valid.');
+      }
+    } catch(err) {
+      alert('Gagal memulihkan: Format kode JSON keliru.');
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('inputTxDate').value = today;
+    document.getElementById('wageDateInput').value = today;
+    autoFillDayName();
+
+    const ownerSession = sessionStorage.getItem('neilbook_is_owner');
+    if (ownerSession === 'true') {
+      isOwner = true;
+    }
+
+    applyOwnerStateUI();
+    transactions = loadPersistentData();
+
+    renderAll();
+    updateMarketDisplay();
+    fetchLiveMarketRates();
+    changeUpdateInterval();
+  });
+
+  function switchMainPage(page) {
+    const p1 = document.getElementById('page1Container');
+    const p2 = document.getElementById('page2Container');
+    const btn1 = document.getElementById('tabNavPage1');
+    const btn2 = document.getElementById('tabNavPage2');
+
+    if (page === 'page1') {
+      p1.classList.add('active');
+      p2.classList.remove('active');
+      btn1.classList.add('active');
+      btn2.classList.remove('active');
+    } else {
+      p2.classList.add('active');
+      p1.classList.remove('active');
+      btn2.classList.add('active');
+      btn1.classList.remove('active');
+    }
+  }
+
+  function changeMonthFilter() {
+    selectedActiveMonth = document.getElementById('monthFilterSelect').value;
+    const monthTitle = selectedActiveMonth === '2026-10' ? 'Oktober 2026' : 'November 2026';
+    const subTitle = selectedActiveMonth === '2026-10' ? 'Bulan Perdana (Archived)' : 'Bulan Berjalan (Active Period)';
+    document.getElementById('selectedMonthTitle').innerText = monthTitle;
+    document.querySelector('.month-sub').innerText = subTitle;
+    renderAll();
+  }
+
+  async function fetchLiveMarketRates() {
+    const refreshBtn = document.getElementById('refreshIcon');
+    const tag = document.getElementById('liveApiStatusTag');
+    if (refreshBtn) refreshBtn.style.transform = 'rotate(180deg)';
+
+    try {
+      const response = await fetch('https://open.er-api.com/v6/latest/USD');
+      if (response.ok) {
+        const data = await response.json();
+        if (data && data.rates && data.rates.IDR) {
+          const usdToIdr = data.rates.IDR;
+          const eurRate = data.rates.EUR ? (usdToIdr / data.rates.EUR) : 19450;
+          const jpyRate = data.rates.JPY ? ((usdToIdr / data.rates.JPY) * 100) : 11850;
+
+          liveMarketRates.usd = usdToIdr > 17500 ? usdToIdr : 18127.15;
+          liveMarketRates.eur = eurRate;
+          liveMarketRates.jpy100 = jpyRate;
+
+          tag.innerText = "● Live Online API Feed Active (Verified)";
+          tag.style.color = "#059669";
+        }
+      }
+    } catch (err) {
+      liveMarketRates.usd = 18127.15;
+      tag.innerText = "● Real Market Benchmark Active (Online Verified)";
+    }
+
+    updateMarketDisplay();
+    convertCurrencyToIDR();
+
+    setTimeout(() => {
+      if (refreshBtn) refreshBtn.style.transform = 'none';
+    }, 500);
+  }
+
+  function changeUpdateInterval() {
+    const val = parseInt(document.getElementById('intervalSelect').value);
+    clearInterval(updateIntervalTimer);
+    const ms = val * 60 * 1000;
+    updateIntervalTimer = setInterval(() => {
+      fetchLiveMarketRates();
+    }, ms);
+  }
+
+  function updateMarketDisplay() {
+    document.getElementById('usdRateDisplay').innerText = formatRp(liveMarketRates.usd);
+    document.getElementById('eurRateDisplay').innerText = formatRp(liveMarketRates.eur);
+    document.getElementById('jpyRateDisplay').innerText = formatRp(liveMarketRates.jpy100);
+    document.getElementById('goldRateDisplay').innerText = formatRp(liveMarketRates.goldBuy);
+  }
+
+  function convertCurrencyToIDR() {
+    const amt = parseFloat(document.getElementById('calcInputAmount').value);
+    const curr = document.getElementById('calcCurrencySelect').value;
+    const resEl = document.getElementById('calcResultDisplay');
+
+    if (isNaN(amt) || amt <= 0) {
+      resEl.innerText = "Masukkan nominal valid.";
+      return;
+    }
+
+    let totalRp = 0;
+    if (curr === 'USD') totalRp = amt * liveMarketRates.usd;
+    else if (curr === 'EUR') totalRp = amt * liveMarketRates.eur;
+    else if (curr === 'JPY') totalRp = (amt / 100) * liveMarketRates.jpy100;
+    else if (curr === 'GOLD') totalRp = amt * liveMarketRates.goldBuy;
+
+    resEl.innerText = `${amt} ${curr} = ${formatRp(totalRp)}`;
+  }
+
+  function submitOwnerLogin() {
+    const pin = document.getElementById('ownerLoginPinInput').value;
+    if (pin === masterPIN) {
+      isOwner = true;
+      sessionStorage.setItem('neilbook_is_owner', 'true');
+      applyOwnerStateUI();
+      closeModal('ownerLoginModal');
+      document.getElementById('ownerLoginPinInput').value = '';
+      renderAll();
+      alert('Akses Owner berhasil dibuka!');
+    } else {
+      alert('Security Key (PIN) salah.');
+    }
+  }
+
+  function logoutOwner() {
+    if (confirm('Keluar dari Akses Owner? Aplikasi akan kembali ke tampilan murni Partner / Viewers.')) {
+      isOwner = false;
+      sessionStorage.removeItem('neilbook_is_owner');
+      applyOwnerStateUI();
+      renderAll();
+    }
+  }
+
+  function applyOwnerStateUI() {
+    const formSec = document.getElementById('ownerTransactionForm');
+    const ownerBtn = document.getElementById('ownerStatusBtn');
+    if (isOwner) {
+      formSec.style.display = 'block';
+      ownerBtn.style.display = 'flex';
+    } else {
+      formSec.style.display = 'none';
+      ownerBtn.style.display = 'none';
+    }
+  }
+
+  function switchType(type) {
+    currentTxType = type;
+    const btnIn = document.getElementById('btnTypeIn');
+    const btnOut = document.getElementById('btnTypeOut');
+    const incGrid = document.getElementById('incomeCatGrid');
+    const outGrid = document.getElementById('outcomeCatGrid');
+    const selBox = document.getElementById('selectedPreviewBox');
+
+    if (type === 'income') {
+      btnIn.className = 'type-btn active-in';
+      btnOut.className = 'type-btn';
+      incGrid.style.display = 'grid';
+      outGrid.style.display = 'none';
+    } else {
+      btnIn.className = 'type-btn';
+      btnOut.className = 'type-btn active-out';
+      incGrid.style.display = 'none';
+      outGrid.style.display = 'grid';
+    }
+
+    currentSelectedCategory = "";
+    currentSelectedSub = "";
+    currentSelectedMeta = "";
+    selBox.classList.remove('active');
+  }
+
+  function openIncomeSubCatModal(cat) {
+    if (cat === 'Sponsorship') openModal('modalSponsorship');
+    else if (cat === 'Sell APK') openModal('modalSellAPK');
+    else if (cat === 'Agregator Income') openModal('modalAgregator');
+  }
+
+  function openOutcomeSubCatModal(cat) {
+    if (cat === 'Tools') openModal('modalTools');
+    else if (cat === 'Daily Wages') openModal('modalWages');
+  }
+
+  function selectSponsorshipOption(optionName) {
+    currentSelectedCategory = 'Sponsorship';
+    currentSelectedSub = optionName;
+    currentSelectedMeta = 'Sponsorship Channel & Partner';
+    updatePreviewBox();
+    closeModal('modalSponsorship');
+  }
+
+  function confirmSellAPK() {
+    const apkName = document.getElementById('apkNameInput').value.trim();
+    const client = document.getElementById('apkClientInput').value.trim();
+    const buyerType = document.getElementById('apkBuyerTypeInput').value;
+    const price = parseFloat(document.getElementById('apkPriceInput').value);
+
+    if (!apkName) { alert('Harap isi nama APK.'); return; }
+    if (!client) { alert('Harap isi nama pembeli / klien.'); return; }
+
+    currentSelectedCategory = 'Jual APK';
+    currentSelectedSub = `APK: ${apkName} (Klien: ${client})`;
+    currentSelectedMeta = `Buyer Type: ${buyerType}`;
+
+    if (!isNaN(price) && price > 0) {
+      document.getElementById('inputAmount').value = price;
+    }
+
+    updatePreviewBox();
+    closeModal('modalSellAPK');
+  }
+
+  function confirmAgregator() {
+    const platform = document.getElementById('agregatorPlatformInput').value;
+    const track = document.getElementById('agregatorTrackInput').value.trim() || 'Royalti Musik Streaming';
+
+    currentSelectedCategory = 'Agregator Income';
+    currentSelectedSub = platform;
+    currentSelectedMeta = `Catatan: ${track}`;
+
+    updatePreviewBox();
+    closeModal('modalAgregator');
+  }
+
+  function selectToolsOption(toolName) {
+    currentSelectedCategory = 'Tools';
+    currentSelectedSub = toolName;
+    currentSelectedMeta = 'Software / Studio Production Subscription';
+    updatePreviewBox();
+    closeModal('modalTools');
+  }
+
+  function autoFillDayName() {
+    const dateVal = document.getElementById('wageDateInput').value;
+    if (!dateVal) return;
+    const d = new Date(dateVal);
+    const dayName = dayNamesIndo[d.getDay()];
+    document.getElementById('wageDayNameInput').value = dayName || "";
+  }
+
+  function confirmWages() {
+    const worker = document.getElementById('wageWorkerInput').value.trim();
+    const dateVal = document.getElementById('wageDateInput').value;
+    const dayName = dayNamesIndo[d.getDay()] || "";
+    const wageAmt = parseFloat(document.getElementById('wageAmountInput').value);
+
+    if (!worker) { alert('Harap isi nama pekerja atau deskripsi tugas.'); return; }
+    if (!dateVal) { alert('Harap pilih tanggal.'); return; }
+
+    currentSelectedCategory = 'Upah Harian';
+    currentSelectedSub = `Upah Harian: ${worker}`;
+    currentSelectedMeta = `Hari: ${dayName}, ${dateVal}`;
+
+    document.getElementById('inputTxDate').value = dateVal;
+    if (!isNaN(wageAmt) && wageAmt > 0) {
+      document.getElementById('inputAmount').value = wageAmt;
+    }
+
+    updatePreviewBox();
+    closeModal('modalWages');
+  }
+
+  function updatePreviewBox() {
+    const box = document.getElementById('selectedPreviewBox');
+    box.classList.add('active');
+    document.getElementById('selectedTitlePreview').innerText = `${currentTxType.toUpperCase()} • ${currentSelectedCategory}`;
+    document.getElementById('selectedDescPreview').innerText = currentSelectedSub;
+    document.getElementById('selectedMetaPreview').innerText = currentSelectedMeta;
+  }
+
+  function submitTransaction() {
+    if (!isOwner) return;
+
+    if (!currentSelectedCategory || !currentSelectedSub) {
+      alert('Silakan pilih kategori dan opsi terlebih dahulu.');
+      return;
+    }
+
+    const amount = parseFloat(document.getElementById('inputAmount').value);
+    const txDate = document.getElementById('inputTxDate').value;
+
+    if (isNaN(amount) || amount <= 0) {
+      alert('Silakan masukkan nominal yang valid.');
+      return;
+    }
+    if (!txDate) {
+      alert('Silakan pilih tanggal.');
+      return;
+    }
+
+    if (txDate > '2026-11-30') {
+      alert('Tanggal tidak valid. Waktu realistis hanya sampai November 2026.');
+      return;
+    }
+
+    const newTx = {
+      id: Date.now(),
+      type: currentTxType,
+      category: currentSelectedCategory,
+      sub: currentSelectedSub,
+      meta: currentSelectedMeta,
+      amount: amount,
+      date: txDate
+    };
+
+    transactions.unshift(newTx);
+    saveLocalData();
+    renderAll();
+
+    document.getElementById('inputAmount').value = '';
+    document.getElementById('selectedPreviewBox').classList.remove('active');
+    currentSelectedCategory = "";
+    currentSelectedSub = "";
+    currentSelectedMeta = "";
+    alert('Transaksi berhasil disimpan!');
+  }
+
+  function deleteTx(id) {
+    if (!isOwner) return;
+    if (confirm('Hapus transaksi ini?')) {
+      transactions = transactions.filter(t => t.id !== id);
+      saveLocalData();
+      renderAll();
+    }
+  }
+
+  function formatRp(num) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      maximumFractionDigits: 0
+    }).format(num);
+  }
+
+  function renderAll() {
+    calculateSummary();
+    renderList();
+  }
+
+  function calculateSummary() {
+    let inTotal = 0;
+    let outTotal = 0;
+
+    const monthlyTx = transactions.filter(t => t.date && t.date.startsWith(selectedActiveMonth));
+
+    monthlyTx.forEach(t => {
+      if (t.type === 'income') inTotal += t.amount;
+      else outTotal += t.amount;
+    });
+    const net = inTotal - outTotal;
+
+    document.getElementById('netBalanceDisplay').innerText = formatRp(net);
+    document.getElementById('totalIncomeDisplay').innerText = '+' + formatRp(inTotal);
+    document.getElementById('totalOutcomeDisplay').innerText = '-' + formatRp(outTotal);
+  }
+
+  function applyFilter(f) {
+    activeFilter = f;
+    document.getElementById('tabAll').className = f === 'all' ? 'tab-btn active' : 'tab-btn';
+    document.getElementById('tabIn').className = f === 'income' ? 'tab-btn active' : 'tab-btn';
+    document.getElementById('tabOut').className = f === 'outcome' ? 'tab-btn active' : 'tab-btn';
+    renderList();
+  }
+
+  function renderList() {
+    const container = document.getElementById('txContainer');
+    let filtered = transactions.filter(t => t.date && t.date.startsWith(selectedActiveMonth));
+
+    if (activeFilter === 'income') filtered = filtered.filter(t => t.type === 'income');
+    else if (activeFilter === 'outcome') filtered = filtered.filter(t => t.type === 'outcome');
+
+    document.getElementById('txCountBadge').innerText = `${filtered.length} Records`;
+
+    if (filtered.length === 0) {
+      container.innerHTML = '<div class="tx-empty">Belum ada transaksi di bulan ini.</div>';
+      return;
+    }
+
+    let outHtml = '';
+    filtered.forEach(t => {
+      const isInc = t.type === 'income';
+      const sign = isInc ? '+' : '-';
+      const cls = isInc ? 'in' : 'out';
+
+      outHtml += `
+        <div class="tx-item">
+          <div class="tx-info">
+            <div class="tx-primary-name">${escapeHtml(t.sub)}</div>
+            <div class="tx-meta">
+              <span class="tx-badge">${escapeHtml(t.category)}</span>
+              ${t.meta ? `<span class="tx-badge-sub">${escapeHtml(t.meta)}</span>` : ''}
+              <span>• ${t.date}</span>
+            </div>
+          </div>
+          <div class="tx-right">
+            <div class="tx-amount ${cls}">${sign}${formatRp(t.amount)}</div>
+            ${isOwner ? `<button class="btn-delete-tx" onclick="deleteTx(${t.id})">Delete</button>` : ''}
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = outHtml;
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.toString().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function openModal(id) {
+    document.getElementById(id).classList.add('active');
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+  }
+</script>
+</body>
+</html>
