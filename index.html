@@ -1,40 +1,126 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0b1120">
-  <meta name="description" content="NeilBook Cashflow — Sistem Pembukuan Arus Kas & Pengelolaan Kas Perusahaan by Neilverse">
-  <title>NeilBook Cashflow • v1.0</title>
+  <meta name="theme-color" content="#fff0f5">
+  <meta name="description" content="NeilBook Cashflow — Sistem Arus Kas & Pengelolaan Kas Neilverse">
+  <title>NeilBook Cashflow • v1.0.9</title>
 
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon-192.png" type="image/png">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
   <!-- Firebase Compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 
-  <!-- Tailwind CSS & Fonts & Chart.js -->
+  <!-- Tailwind CSS & Force Manual Dark Mode Selector -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    };
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <style>
-    :root {
-      --oneui-bg: #0b1120;
-      --oneui-surface: rgba(18, 26, 47, 0.78);
-      --oneui-card: rgba(23, 34, 61, 0.72);
-      --oneui-border: rgba(255, 255, 255, 0.08);
-      --oneui-accent: #0284c7;
-      --oneui-cyan: #38bdf8;
-      --oneui-emerald: #10b981;
-      --oneui-rose: #f43f5e;
-      --oneui-amber: #f59e0b;
-      --oneui-radius: 28px;
+    /* ========================================================
+       TEMA TERANG (PINK PASTEL SUSU DENGAN AWAN KOMIK)
+       ======================================================== */
+    :root[data-theme="light"] {
+      --bg-gradient: radial-gradient(at 10% 10%, rgba(254, 205, 227, 0.45) 0px, transparent 50%),
+                     radial-gradient(at 90% 15%, rgba(255, 215, 235, 0.55) 0px, transparent 45%),
+                     radial-gradient(at 50% 90%, rgba(254, 240, 248, 0.95) 0px, transparent 60%),
+                     linear-gradient(135deg, #fff4f8 0%, #ffebf3 40%, #ffffff 100%);
+      --bg-color: #fff4f8;
+      --card-bg: rgba(255, 255, 255, 0.93);
+      --card-border: rgba(244, 114, 182, 0.45);
+      --card-shadow: 0 16px 36px -10px rgba(219, 39, 119, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
+      --sub-card-bg: #ffffff;
+      --sub-card-border: rgba(244, 114, 182, 0.35);
+
+      /* Typography High Contrast */
+      --text-title: #09090b;
+      --text-heading: #18181b;
+      --text-body: #27272a;
+      --text-muted: #52525b;
+      --text-pink-strong: #9d174d;
+
+      /* Badges & Accents */
+      --badge-bg: rgba(244, 114, 182, 0.18);
+      --badge-text: #831843;
+      --badge-border: rgba(219, 39, 119, 0.4);
+
+      /* Compact Tax Card */
+      --tax-bg: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      --tax-border: #f59e0b;
+      --tax-title: #78350f;
+      --tax-num: #92400e;
+
+      /* Input & Dock */
+      --input-bg: #ffffff;
+      --input-border: #f472b6;
+      --input-text: #09090b;
+      --dock-bg: rgba(255, 255, 255, 0.95);
+      --dock-border: rgba(244, 114, 182, 0.5);
+      --dock-icon: #52525b;
+
+      /* Comic Cloud Aesthetic */
+      --cloud-fill: rgba(255, 255, 255, 0.75);
+      --cloud-stroke: rgba(244, 114, 182, 0.35);
+      --cloud-shadow: rgba(244, 114, 182, 0.2);
+    }
+
+    /* ========================================================
+       TEMA GELAP (PEKAT OLED #000000)
+       ======================================================== */
+    :root[data-theme="dark"], html.dark {
+      --bg-gradient: radial-gradient(at 10% 10%, rgba(236, 72, 153, 0.15) 0px, transparent 40%),
+                     radial-gradient(at 90% 15%, rgba(219, 39, 119, 0.12) 0px, transparent 45%),
+                     #050507;
+      --bg-color: #050507;
+      --card-bg: rgba(18, 18, 22, 0.94);
+      --card-border: rgba(244, 114, 182, 0.35);
+      --card-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.95), 0 0 20px -8px rgba(244, 114, 182, 0.18);
+      --sub-card-bg: rgba(28, 24, 32, 0.92);
+      --sub-card-border: rgba(244, 114, 182, 0.3);
+
+      /* Typography Dark Mode */
+      --text-title: #ffffff;
+      --text-heading: #f8fafc;
+      --text-body: #f1f5f9;
+      --text-muted: #cbd5e1;
+      --text-pink-strong: #f472b6;
+
+      /* Badges & Accents */
+      --badge-bg: rgba(244, 114, 182, 0.22);
+      --badge-text: #fbcfe8;
+      --badge-border: rgba(244, 114, 182, 0.45);
+
+      /* Compact Tax Card Dark */
+      --tax-bg: linear-gradient(135deg, rgba(60, 40, 15, 0.85) 0%, rgba(35, 25, 12, 0.95) 100%);
+      --tax-border: #f59e0b;
+      --tax-title: #fde68a;
+      --tax-num: #fbbf24;
+
+      /* Input & Dock */
+      --input-bg: rgba(10, 10, 14, 0.95);
+      --input-border: rgba(244, 114, 182, 0.4);
+      --input-text: #ffffff;
+      --dock-bg: rgba(18, 18, 24, 0.95);
+      --dock-border: rgba(244, 114, 182, 0.35);
+      --dock-icon: #e2e8f0;
+
+      /* Comic Cloud Aesthetic Dark */
+      --cloud-fill: rgba(30, 20, 35, 0.45);
+      --cloud-stroke: rgba(244, 114, 182, 0.25);
+      --cloud-shadow: rgba(0, 0, 0, 0.5);
     }
 
     * {
@@ -44,71 +130,158 @@
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: var(--oneui-bg);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.12) 0px, transparent 50%),
-        radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%);
+      background: var(--bg-gradient);
+      background-color: var(--bg-color);
       background-attachment: fixed;
-      color: #f8fafc;
+      color: var(--text-body);
       min-height: 100vh;
       overflow-x: hidden;
-      padding-bottom: 110px; /* Ruang untuk macOS Dock */
+      padding-bottom: 125px;
+      position: relative;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
     .brand-font {
       font-family: 'Space Grotesk', sans-serif;
     }
 
-    /* Samsung One UI Card Styling (Lengkungan Halus & Squircle Vibe) */
-    .oneui-card {
-      background: var(--oneui-card);
-      backdrop-filter: blur(28px) saturate(180%);
-      -webkit-backdrop-filter: blur(28px) saturate(180%);
-      border: 1px solid var(--oneui-border);
-      border-radius: var(--oneui-radius);
-      box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    /* COMIC CLOUD BACKGROUND DECORATION */
+    .comic-clouds-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
     }
 
-    .oneui-input {
-      background: rgba(11, 18, 33, 0.85);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+    .comic-cloud {
+      position: absolute;
+      fill: var(--cloud-fill);
+      stroke: var(--cloud-stroke);
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 12px 24px var(--cloud-shadow));
+      transition: fill 0.3s ease, stroke 0.3s ease;
+    }
+
+    .cloud-top-left {
+      top: -30px;
+      left: -50px;
+      width: 280px;
+      animation: floatCloud1 14s ease-in-out infinite alternate;
+    }
+
+    .cloud-top-right {
+      top: 40px;
+      right: -70px;
+      width: 340px;
+      animation: floatCloud2 18s ease-in-out infinite alternate;
+    }
+
+    .cloud-mid-left {
+      top: 38%;
+      left: -90px;
+      width: 310px;
+      opacity: 0.85;
+      animation: floatCloud2 20s ease-in-out infinite alternate;
+    }
+
+    .cloud-bottom-right {
+      bottom: 60px;
+      right: -80px;
+      width: 320px;
+      opacity: 0.9;
+      animation: floatCloud1 16s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatCloud1 {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(1deg); }
+      100% { transform: translateY(8px) rotate(-1deg); }
+    }
+
+    @keyframes floatCloud2 {
+      0% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(14px) scale(1.02); }
+      100% { transform: translateY(-10px) scale(0.99); }
+    }
+
+    /* Utilitas Warna Khusus */
+    .app-title-text { color: var(--text-title) !important; }
+    .app-heading-text { color: var(--text-heading) !important; }
+    .app-body-text { color: var(--text-body) !important; }
+    .app-muted-text { color: var(--text-muted) !important; }
+    .app-pink-text { color: var(--text-pink-strong) !important; }
+
+    /* Glass Cards */
+    .glass-card-theme {
+      background: var(--card-bg);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      box-shadow: var(--card-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .glass-sub-card {
+      background: var(--sub-card-bg);
+      border: 1px solid var(--sub-card-border);
+      border-radius: 20px;
+    }
+
+    .glass-input-theme {
+      background: var(--input-bg);
+      border: 1px solid var(--input-border);
       border-radius: 18px;
-      color: #ffffff;
+      color: var(--input-text);
       outline: none;
       transition: all 0.2s;
     }
-    .oneui-input:focus {
-      border-color: #38bdf8;
-      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+    .glass-input-theme:focus {
+      border-color: #db2777;
+      box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.25);
     }
 
     /* Pill Logo by neilverse / */
     .neilverse-pill {
       background: #ffffff;
       border-radius: 9999px;
-      padding: 4px 14px 4px 12px;
+      padding: 5px 14px 5px 12px;
       display: inline-flex;
       align-items: center;
       gap: 3px;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 16px rgba(219, 39, 119, 0.2);
+      border: 1px solid rgba(244, 114, 182, 0.4);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease;
+    }
+    .neilverse-pill:active {
+      transform: scale(0.93);
     }
     .neilverse-pill-text {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
       font-size: 13px;
       letter-spacing: -0.02em;
-      color: #475569;
+      color: #334155;
     }
     .neilverse-pill-text span {
-      color: #334155;
+      color: #0f172a;
+      font-weight: 800;
     }
     .neilverse-pill-slash {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 800;
       font-size: 15px;
-      color: #00b4d8;
+      color: #0284c7;
       margin-left: 2px;
       transform: skewX(-6deg);
     }
@@ -120,16 +293,17 @@
       left: 50%;
       transform: translateX(-50%);
       z-index: 50;
-      background: rgba(15, 23, 42, 0.82);
-      backdrop-filter: blur(32px) saturate(200%);
-      -webkit-backdrop-filter: blur(32px) saturate(200%);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 36px;
-      padding: 6px 12px;
+      background: var(--dock-bg);
+      backdrop-filter: blur(36px) saturate(210%);
+      -webkit-backdrop-filter: blur(36px) saturate(210%);
+      border: 1px solid var(--dock-border);
+      border-radius: 38px;
+      padding: 6px 14px;
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 20px 45px -8px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.35), 0 0 25px -4px rgba(219, 39, 119, 0.18);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .dock-btn {
@@ -141,17 +315,21 @@
       width: 52px;
       height: 52px;
       border-radius: 22px;
-      color: #94a3b8;
-      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      color: var(--dock-icon);
+      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .dock-btn:hover {
-      color: #ffffff;
-      transform: translateY(-4px) scale(1.08);
-      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-5px) scale(1.1);
+      background: rgba(244, 114, 182, 0.2);
+      color: var(--text-pink-strong);
     }
     .dock-btn.active {
-      color: #38bdf8;
-      background: rgba(56, 189, 248, 0.15);
+      color: var(--text-pink-strong);
+      background: rgba(244, 114, 182, 0.26);
+      box-shadow: 0 4px 16px rgba(219, 39, 119, 0.22);
+    }
+    :root[data-theme="dark"] .dock-btn.active {
+      color: #f472b6;
     }
     .dock-btn.active::after {
       content: '';
@@ -160,136 +338,257 @@
       width: 4px;
       height: 4px;
       border-radius: 999px;
-      background: #38bdf8;
-      box-shadow: 0 0 8px #38bdf8;
+      background: var(--text-pink-strong);
+      box-shadow: 0 0 8px var(--text-pink-strong);
+    }
+    :root[data-theme="dark"] .dock-btn.active::after {
+      background: #f472b6;
+      box-shadow: 0 0 8px #f472b6;
+    }
+
+    /* Pull to Refresh Indicator */
+    #pullToRefresh {
+      position: fixed;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(20px);
+      border-radius: 9999px;
+      padding: 8px 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-pink-strong);
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);
+      transition: top 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+      pointer-events: none;
+      opacity: 0;
     }
 
     /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb { background: rgba(244, 114, 182, 0.4); border-radius: 999px; }
   </style>
 </head>
 
 <body>
 
-  <!-- ONE UI LARGE HEADER (Khas Samsung One UI) -->
-  <header class="px-5 pt-8 pb-4 max-w-4xl mx-auto">
+  <!-- LAYER VEKTOR AWAN TEBAL KOMIK BERWARNA (AESTHETIC COMIC CLOUDS) -->
+  <div class="comic-clouds-container" aria-hidden="true">
+    <!-- Cloud 1 (Top Left) -->
+    <svg class="comic-cloud cloud-top-left" viewBox="0 0 200 120">
+      <path d="M 30,85 A 25,25 0 0,1 55,55 A 35,35 0 0,1 115,40 A 30,30 0 0,1 165,60 A 25,25 0 0,1 180,95 A 15,15 0 0,1 165,115 L 35,115 A 15,15 0 0,1 30,85 Z" />
+    </svg>
+    <!-- Cloud 2 (Top Right) -->
+    <svg class="comic-cloud cloud-top-right" viewBox="0 0 240 140">
+      <path d="M 40,100 A 30,30 0 0,1 70,60 A 45,45 0 0,1 145,45 A 35,35 0 0,1 205,75 A 25,25 0 0,1 220,115 A 18,18 0 0,1 200,135 L 45,135 A 18,18 0 0,1 40,100 Z" />
+    </svg>
+    <!-- Cloud 3 (Mid Left) -->
+    <svg class="comic-cloud cloud-mid-left" viewBox="0 0 220 130">
+      <path d="M 35,95 A 28,28 0 0,1 65,60 A 40,40 0 0,1 135,45 A 32,32 0 0,1 190,70 A 24,24 0 0,1 205,105 A 16,16 0 0,1 185,125 L 40,125 A 16,16 0 0,1 35,95 Z" />
+    </svg>
+    <!-- Cloud 4 (Bottom Right) -->
+    <svg class="comic-cloud cloud-bottom-right" viewBox="0 0 230 135">
+      <path d="M 35,95 A 26,26 0 0,1 65,58 A 42,42 0 0,1 140,48 A 34,34 0 0,1 195,74 A 24,24 0 0,1 210,110 A 16,16 0 0,1 190,130 L 40,130 A 16,16 0 0,1 35,95 Z" />
+    </svg>
+  </div>
+
+  <!-- PULL TO REFRESH SPRING INDICATOR -->
+  <div id="pullToRefresh">
+    <svg id="ptrIcon" class="w-4 h-4 animate-spin text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+    </svg>
+    <span id="ptrText">Memperbarui Kas Neilverse...</span>
+  </div>
+
+  <!-- ONE UI HEADER -->
+  <header class="px-5 pt-7 pb-4 max-w-4xl mx-auto relative z-10">
     <div class="flex items-center justify-between">
-      <!-- Logo by neilverse / Pill -->
-      <div class="neilverse-pill">
+      <!-- Logo by neilverse / Pill (Ketuk 7x untuk login mode Owner) -->
+      <div id="btnSecretOwner" class="neilverse-pill" title="Ketuk 7 kali untuk akses Owner">
         <span class="neilverse-pill-text">by <span>neilverse</span></span>
         <span class="neilverse-pill-slash">/</span>
       </div>
 
       <div class="flex items-center gap-2">
+        <!-- Theme Toggle Button -->
+        <button id="btnThemeToggle" onclick="toggleTheme()" class="p-2 rounded-2xl border border-pink-400/40 bg-white/80 dark:bg-zinc-900/80 text-pink-700 dark:text-pink-300 hover:scale-105 active:scale-95 transition shadow-sm" title="Ubah Tema Tampilan">
+          <span id="themeIcon">🌙</span>
+        </button>
+
         <!-- Cloud Sync Badge -->
-        <div id="cloudStatusBadge" class="flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-white/5 border border-white/10 text-slate-300">
-          <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <div id="cloudStatusBadge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border border-pink-400/40 bg-white/80 dark:bg-zinc-900/80 text-slate-800 dark:text-slate-200">
+          <span id="cloudStatusDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
           <span id="cloudStatusText">Terhubung</span>
         </div>
+
         <!-- Version Badge -->
-        <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-sky-500/15 border border-sky-500/30 text-sky-400">v1.0</span>
+        <span class="px-2.5 py-1 rounded-full text-[11px] font-black border" style="background: var(--badge-bg); color: var(--badge-text); border-color: var(--badge-border);">v1.0.9</span>
       </div>
     </div>
 
-    <!-- Title Area (Large & Comfortable) -->
-    <div class="mt-6">
-      <h1 class="brand-font text-3xl sm:text-4xl font-extrabold tracking-tight text-white">NeilBook Cashflow</h1>
-      <p class="text-sm text-slate-400 mt-1">Pembukuan Arus Kas & Pengelolaan Kas Perusahaan</p>
+    <!-- Title & Jam + Kalender Minimalis Sesuai Permintaan -->
+    <div class="mt-6 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h1 class="brand-font text-3xl sm:text-4xl font-black tracking-tight app-title-text">NeilBook Cashflow</h1>
+        <p class="text-xs sm:text-sm app-muted-text mt-1 font-bold">Sistem Arus Kas & Pengelolaan Kas Neilverse</p>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <!-- WIDGET JAM & KALENDER MINIMALIS -->
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-2xl border shadow-sm glass-sub-card">
+          <span class="w-2 h-2 rounded-full bg-pink-500 animate-ping"></span>
+          <span id="liveClockWidget" class="text-xs font-bold app-heading-text font-mono tracking-tight">--:-- | Memuat Kalender...</span>
+        </div>
+
+        <!-- Tombol Keluar Mode Owner (Hanya muncul jika aktif) -->
+        <button id="btnLogoutOwner" onclick="logoutOwner()" class="hidden px-3.5 py-1.5 rounded-2xl text-xs font-black border bg-rose-500/15 border-rose-500/40 text-rose-800 dark:bg-rose-500/25 dark:border-rose-400 dark:text-rose-200 hover:scale-105 active:scale-95 transition shadow-sm">
+          Kunci Owner
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- MAIN TAB VIEWS -->
-  <main class="max-w-4xl mx-auto px-4 space-y-6">
+  <!-- MAIN VIEW CONTAINER -->
+  <main class="max-w-4xl mx-auto px-4 space-y-6 relative z-10">
 
-    <!-- ==================== TAB 1: RINGKASAN KAS & ALL-TIME ==================== -->
+    <!-- ==================== TAB 1: DASHBOARD ==================== -->
     <div id="viewDashboard" class="space-y-6">
 
-      <!-- UANG KAS PERUSAHAAN (HERO CARD) -->
-      <section class="oneui-card p-6 sm:p-7 relative overflow-hidden border-sky-500/20 bg-gradient-to-br from-slate-900/90 via-slate-900/70 to-sky-950/30">
-        <div class="absolute -right-16 -top-16 w-52 h-52 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="flex items-start justify-between">
-          <div>
+      <!-- UANG KAS NEILVERSE & PAJAK 12% UNTUK NEGARA (HERO CARD - GEPENG & SEIMBANG) -->
+      <section class="glass-card-theme p-6 sm:p-7 relative overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+          <!-- KIRI: UANG KAS NEILVERSE -->
+          <div class="md:col-span-2 space-y-1">
             <div class="flex items-center gap-2">
-              <span class="text-xs uppercase font-extrabold tracking-wider text-sky-400">Uang Kas Perusahaan</span>
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 font-bold border border-sky-500/30">Kas Riil</span>
+              <span class="text-xs uppercase font-black tracking-wider app-pink-text">UANG KAS NEILVERSE</span>
+              <span class="text-[10px] px-2.5 py-0.5 rounded-full font-bold border" style="background: var(--badge-bg); color: var(--badge-text); border-color: var(--badge-border);">Kas Bersih Riil</span>
             </div>
-            <div id="displayCashOnHand" class="text-3xl sm:text-4xl font-black text-white mt-1.5 brand-font tracking-tight">Rp 0</div>
-            <p class="text-xs text-slate-400 mt-1">Total dana yang saat ini tersedia di rekening kas operasional.</p>
+            <!-- Nominal Utama Hitam Pekat Solid -->
+            <div id="displayCashOnHand" class="text-3xl sm:text-4xl font-black brand-font tracking-tight app-title-text">Rp 0</div>
+            <p class="text-xs app-muted-text font-semibold">Saldo kas operasional yang standby di rekening Neilverse.</p>
           </div>
-          <div class="w-12 h-12 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 shrink-0">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+
+          <!-- KANAN: PAJAK 12% UNTUK NEGARA (GEPENG & COMPACT AGAR TIDAK MERUSAK DESIGN) -->
+          <div class="p-3.5 sm:p-4 rounded-2xl border shadow-sm flex flex-col justify-center" style="background: var(--tax-bg); border-color: var(--tax-border);">
+            <div class="flex items-center justify-between gap-1.5 mb-1">
+              <span class="text-[10px] font-black uppercase tracking-wider" style="color: var(--tax-title);">PAJAK 12% UNTUK NEGARA</span>
+              <span class="text-[9px] px-2 py-0.5 rounded-full font-black border shrink-0 bg-amber-500/20 border-amber-500/40" style="color: var(--tax-title);">PPN 12%</span>
+            </div>
+            <div id="displayTaxCollected" class="text-xl sm:text-2xl font-black brand-font tracking-tight my-0.5" style="color: var(--tax-num);">Rp 0</div>
+            <p class="text-[10px] font-bold leading-tight" style="color: var(--tax-title);">Akumulasi 12% pengeluaran tools.</p>
           </div>
         </div>
 
-        <!-- STATUS MODAL OWNER BAR -->
-        <div class="mt-6 pt-5 border-t border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div class="bg-white/5 p-3.5 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block">Total Modal Disuntik:</span>
-            <span id="displayOwnerInjected" class="font-bold text-sm text-slate-200 mt-0.5 block">Rp 0</span>
-          </div>
-          <div class="bg-white/5 p-3.5 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block">Modal Dikembalikan:</span>
-            <span id="displayOwnerRepaid" class="font-bold text-sm text-emerald-400 mt-0.5 block">Rp 0</span>
-          </div>
-          <div class="bg-white/5 p-3.5 rounded-2xl border border-white/5 flex flex-col justify-between">
-            <div class="flex items-center justify-between">
-              <span class="text-amber-400 font-semibold">Tanggungan Modal:</span>
-              <span id="badgeOwnerStatus" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">Belum Lunas</span>
+        <!-- DERETAN STATUS MODAL DARI ONY S & NEIL A -->
+        <div class="mt-6 pt-5 border-t border-pink-400/30 space-y-3">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs">
+            <!-- KOTAK MODAL ONY S -->
+            <div class="glass-sub-card p-4 space-y-2.5 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="font-black text-sm flex items-center gap-1.5 app-heading-text">
+                  <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
+                  Modal dari Ony S
+                </span>
+                <span id="badgeOnyStatus" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-500/40">Lunas (Rp 0)</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 dark:border-pink-400/20">
+                <div>
+                  <span class="app-muted-text block text-[11px] font-bold">Disuntik</span>
+                  <span id="displayOnyInjected" class="font-black text-xs app-heading-text">Rp 0</span>
+                </div>
+                <div>
+                  <span class="app-muted-text block text-[11px] font-bold">Dikembalikan</span>
+                  <span id="displayOnyRepaid" class="font-black text-xs text-emerald-700 dark:text-emerald-300">Rp 0</span>
+                </div>
+                <div>
+                  <span class="text-amber-800 dark:text-amber-300 block text-[11px] font-black">Sisa Modal</span>
+                  <span id="displayOnyDebt" class="font-black text-xs text-amber-700 dark:text-amber-200">Rp 0</span>
+                </div>
+              </div>
             </div>
-            <span id="displayOwnerDebt" class="font-bold text-sm text-amber-300 mt-1 block">Rp 0</span>
+
+            <!-- KOTAK MODAL NEIL A -->
+            <div class="glass-sub-card p-4 space-y-2.5 shadow-sm">
+              <div class="flex items-center justify-between">
+                <span class="font-black text-sm flex items-center gap-1.5 app-heading-text">
+                  <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                  Modal dari Neil A
+                </span>
+                <span id="badgeNeilStatus" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-500/40">Lunas (Rp 0)</span>
+              </div>
+              <div class="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 dark:border-pink-400/20">
+                <div>
+                  <span class="app-muted-text block text-[11px] font-bold">Disuntik</span>
+                  <span id="displayNeilInjected" class="font-black text-xs app-heading-text">Rp 0</span>
+                </div>
+                <div>
+                  <span class="app-muted-text block text-[11px] font-bold">Dikembalikan</span>
+                  <span id="displayNeilRepaid" class="font-black text-xs text-emerald-700 dark:text-emerald-300">Rp 0</span>
+                </div>
+                <div>
+                  <span class="text-amber-800 dark:text-amber-300 block text-[11px] font-black">Sisa Modal</span>
+                  <span id="displayNeilDebt" class="font-black text-xs text-amber-700 dark:text-amber-200">Rp 0</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <!-- METRIK ALL-TIME (Pemasukan, Pengeluaran, Keuntungan Bersih) -->
+      <!-- METRIK ALL-TIME -->
       <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <!-- Pemasukan All-Time -->
-        <div class="oneui-card p-5">
+        <div class="glass-card-theme p-5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-xs font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
               Pemasukan All-Time
             </span>
           </div>
-          <div id="displayAllTimeIncome" class="text-xl sm:text-2xl font-extrabold text-emerald-400 mt-2">Rp 0</div>
-          <p class="text-[11px] text-slate-400 mt-1">Sponsor, AdSense, Pendapatan</p>
+          <div id="displayAllTimeIncome" class="text-2xl font-black text-emerald-800 dark:text-emerald-300 mt-2">Rp 0</div>
+          <p class="text-[11px] app-muted-text mt-1 font-semibold">Sponsor, AdSense, Penjualan App</p>
         </div>
 
         <!-- Pengeluaran All-Time -->
-        <div class="oneui-card p-5">
+        <div class="glass-card-theme p-5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-rose-400 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+            <span class="text-xs font-black uppercase tracking-wider text-rose-800 dark:text-rose-300 flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
               Pengeluaran All-Time
             </span>
           </div>
-          <div id="displayAllTimeOutcome" class="text-xl sm:text-2xl font-extrabold text-rose-400 mt-2">Rp 0</div>
-          <p class="text-[11px] text-slate-400 mt-1">Tools, Iklan, Gaji Tim Kreatif</p>
+          <div id="displayAllTimeOutcome" class="text-2xl font-black text-rose-800 dark:text-rose-300 mt-2">Rp 0</div>
+          <p class="text-[11px] app-muted-text mt-1 font-semibold">Tools AI, Iklan, Gaji Tim Kreatif</p>
         </div>
 
         <!-- Keuntungan All-Time -->
-        <div class="oneui-card p-5">
+        <div class="glass-card-theme p-5">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
-              <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span class="text-xs font-black uppercase tracking-wider app-pink-text flex items-center gap-1.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
               Keuntungan All-Time
             </span>
           </div>
-          <div id="displayAllTimeProfit" class="text-xl sm:text-2xl font-extrabold text-cyan-400 mt-2">Rp 0</div>
-          <p class="text-[11px] text-slate-400 mt-1">Laba Bersih Akumulatif Riil</p>
+          <div id="displayAllTimeProfit" class="text-2xl font-black app-pink-text mt-2">Rp 0</div>
+          <p class="text-[11px] app-muted-text mt-1 font-semibold">Laba Bersih Akumulatif Riil</p>
         </div>
       </section>
 
       <!-- GRAFIK ARUS KAS BULANAN -->
-      <section class="oneui-card p-5 sm:p-6">
+      <section class="glass-card-theme p-5 sm:p-6">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h2 class="font-bold text-base text-white">Tren Keuangan Per Bulan</h2>
-            <p class="text-xs text-slate-400">Perbandingan pemasukan, pengeluaran, dan laba bersih</p>
+            <h2 class="font-black text-base app-title-text">Tren Keuangan Per Bulan</h2>
+            <p class="text-xs app-muted-text font-semibold">Pemasukan vs Pengeluaran operasional</p>
           </div>
-          <span class="text-xs px-2.5 py-1 rounded-full bg-white/10 text-slate-300 font-semibold">Mulai Okt 2026</span>
+          <span class="text-xs px-2.5 py-1 rounded-full font-bold border" style="background: var(--badge-bg); color: var(--badge-text); border-color: var(--badge-border);">Mulai Okt 2026</span>
         </div>
         <div class="h-64 w-full">
           <canvas id="canvasCashflow"></canvas>
@@ -297,17 +596,16 @@
       </section>
 
       <!-- RIWAYAT TRANSAKSI TERAKHIR -->
-      <section class="oneui-card p-5 sm:p-6 space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-white/10">
+      <section class="glass-card-theme p-5 sm:p-6 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-pink-400/20">
           <div>
-            <h2 class="font-bold text-base text-white">Riwayat Transaksi Terbaru</h2>
-            <p class="text-xs text-slate-400">Catatan arus kas masuk, operasional, dan modal</p>
+            <h2 class="font-black text-base app-title-text">Riwayat Transaksi Terbaru</h2>
+            <p class="text-xs app-muted-text font-semibold">Catatan arus kas, belanja tools, dan pengeluaran</p>
           </div>
-          <button onclick="switchTab('tabRecord')" class="text-xs font-bold text-sky-400 hover:text-sky-300 flex items-center gap-1">
-            + Tambah Baru
+          <button id="btnQuickRecord" onclick="switchTab('tabRecord')" class="hidden text-xs font-black app-pink-text hover:underline flex items-center gap-1">
+            + Catat Baru
           </button>
         </div>
-
         <div id="recentTxContainer" class="space-y-3">
           <!-- Rendered via JS -->
         </div>
@@ -316,116 +614,119 @@
 
     <!-- ==================== TAB 2: RINCIAN PER BULAN ==================== -->
     <div id="viewMonthly" class="space-y-6 hidden">
-      <div class="oneui-card p-6">
-        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+      <div class="glass-card-theme p-6">
+        <div class="flex items-center justify-between pb-4 border-b border-pink-400/20">
           <div>
-            <h2 class="brand-font text-xl font-bold text-white">Rincian Laporan Per Bulan</h2>
-            <p class="text-xs text-slate-400">Rekapitulasi pemasukan, pengeluaran, dan laba bersih mulai Oktober 2026</p>
+            <h2 class="brand-font text-xl font-black app-title-text">Rincian Laporan Per Bulan</h2>
+            <p class="text-xs text-slate-600 dark:text-slate-300 font-bold mt-0.5">Rekapitulasi pemasukan, pengeluaran, laba bersih, dan pajak 12% pengeluaran</p>
           </div>
-          <button onclick="exportMonthlyReport()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/15 text-slate-200 transition">
+          <button onclick="exportMonthlyReport()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold border" style="background: var(--badge-bg); color: var(--badge-text); border-color: var(--badge-border);">
             Ekspor CSV
           </button>
         </div>
-
-        <!-- Monthly Accordion List -->
         <div id="monthlyListContainer" class="mt-4 space-y-4">
           <!-- Rendered via JS -->
         </div>
       </div>
     </div>
 
-    <!-- ==================== TAB 3: CATAT TRANSAKSI (INPUT FORM) ==================== -->
+    <!-- ==================== TAB 3: CATAT TRANSAKSI (MODE OWNER) ==================== -->
     <div id="viewRecord" class="space-y-6 hidden">
-      <div class="oneui-card p-6 sm:p-8 max-w-xl mx-auto">
-        <h2 class="brand-font text-2xl font-bold text-white mb-1">Catat Arus Kas Baru</h2>
-        <p class="text-xs text-slate-400 mb-6">Pilih jenis transaksi yang sesuai dengan standar alokasi perusahaan</p>
+      <div class="glass-card-theme p-6 sm:p-8 max-w-xl mx-auto">
+        <h2 class="brand-font text-2xl font-black mb-1 app-title-text">Catat Arus Kas Baru</h2>
+        <p class="text-xs app-muted-text font-semibold mb-6">Pilih jenis transaksi yang sesuai dengan alokasi kas Neilverse</p>
 
         <form id="formTransaction" class="space-y-5">
-          <!-- PILIH KATEGORI UTAMA -->
+          <!-- PILIH JENIS UTAMA -->
           <div>
-            <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Jenis Transaksi</label>
+            <label class="block text-xs font-black uppercase tracking-wider mb-2 app-heading-text">Jenis Transaksi</label>
             <div class="grid grid-cols-2 gap-2.5">
-              <button type="button" id="btnTypeInc" onclick="setFormCategoryType('INCOME')" class="py-3 px-3 rounded-2xl border text-xs font-bold transition flex items-center justify-center gap-1.5 bg-emerald-500/20 border-emerald-500 text-emerald-300">
+              <button type="button" id="btnTypeInc" onclick="setFormCategoryType('INCOME')" class="py-3 px-3 rounded-2xl border text-xs font-black transition flex items-center justify-center gap-1.5 bg-emerald-500/20 border-emerald-500 text-emerald-800 dark:text-emerald-300">
                 + Pemasukan (Income)
               </button>
-              <button type="button" id="btnTypeOut" onclick="setFormCategoryType('OUTCOME')" class="py-3 px-3 rounded-2xl border text-xs font-bold transition flex items-center justify-center gap-1.5 bg-white/5 border-white/10 text-slate-400">
+              <button type="button" id="btnTypeOut" onclick="setFormCategoryType('OUTCOME')" class="py-3 px-3 rounded-2xl border text-xs font-bold transition flex items-center justify-center gap-1.5 bg-white/70 dark:bg-black/25 border-pink-400/30 app-muted-text">
                 - Pengeluaran (Outcome)
               </button>
             </div>
-            <!-- Sub-opsi Khusus Modal Owner -->
+            <!-- Sub-opsi Modal Owner -->
             <div class="mt-2.5 grid grid-cols-2 gap-2">
-              <button type="button" id="btnTypeOwnerInject" onclick="setFormCategoryType('OWNER_INJECT')" class="py-2 px-2.5 rounded-xl border text-[11px] font-bold transition bg-white/5 border-white/10 text-slate-400">
+              <button type="button" id="btnTypeOwnerInject" onclick="setFormCategoryType('OWNER_INJECT')" class="py-2 px-2.5 rounded-xl border text-[11px] font-bold transition bg-white/70 dark:bg-black/25 border-pink-400/30 app-muted-text">
                 Suntik Modal Owner
               </button>
-              <button type="button" id="btnTypeOwnerRepay" onclick="setFormCategoryType('OWNER_REPAY')" class="py-2 px-2.5 rounded-xl border text-[11px] font-bold transition bg-white/5 border-white/10 text-slate-400">
+              <button type="button" id="btnTypeOwnerRepay" onclick="setFormCategoryType('OWNER_REPAY')" class="py-2 px-2.5 rounded-xl border text-[11px] font-bold transition bg-white/70 dark:bg-black/25 border-pink-400/30 app-muted-text">
                 Kembalikan Modal Owner
               </button>
             </div>
           </div>
 
           <!-- KATEGORI KHUSUS -->
-          <div id="categorySelectWrapper">
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Kategori Transaksi</label>
-            <select id="txCategory" class="oneui-input w-full px-4 py-3 text-sm">
-              <!-- Dynamically populated based on chosen type -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="block text-xs font-black app-heading-text">Kategori Transaksi</label>
+              <span id="taxNoticeBadge" class="hidden text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/40">
+                PPN 12% Pengeluaran Terhitung
+              </span>
+            </div>
+            <select id="txCategory" onchange="onCategorySelectChange()" class="glass-input-theme w-full px-4 py-3 text-sm font-semibold">
+              <!-- Dynamically populated -->
             </select>
           </div>
 
           <!-- DESKRIPSI -->
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Deskripsi / Keterangan</label>
-            <input id="txDescription" type="text" placeholder="Contoh: Sponsor Video Seri 1, Tagihan Grok AI" required class="oneui-input w-full px-4 py-3 text-sm">
+            <label class="block text-xs font-black app-heading-text mb-1.5">Keterangan / Transaksi</label>
+            <input id="txDescription" type="text" placeholder="Contoh: Pembelian Lisensi CapCut Pro, Tagihan Grok AI" required class="glass-input-theme w-full px-4 py-3 text-sm font-medium">
           </div>
 
           <!-- NOMINAL & TANGGAL -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal (Rupiah)</label>
-              <input id="txAmount" type="number" min="1" placeholder="Contoh: 350000" required class="oneui-input w-full px-4 py-3 text-sm">
+              <label class="block text-xs font-black app-heading-text mb-1.5">Nominal (Rupiah)</label>
+              <input id="txAmount" type="number" min="1" placeholder="Contoh: 1500000" required class="glass-input-theme w-full px-4 py-3 text-sm font-bold">
+              <span id="taxPreviewText" class="text-[11px] text-amber-800 dark:text-amber-300 mt-1 block hidden font-bold"></span>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tanggal Transaksi</label>
-              <input id="txDate" type="date" required class="oneui-input w-full px-4 py-3 text-sm">
-              <span class="text-[10px] text-slate-400 mt-1 block">*Maksimal tanggal hari ini</span>
+              <label class="block text-xs font-black app-heading-text mb-1.5">Tanggal Transaksi</label>
+              <input id="txDate" type="date" required class="glass-input-theme w-full px-4 py-3 text-sm font-semibold">
+              <span class="text-[10px] app-muted-text mt-1 block font-medium">*Maksimal tanggal hari ini</span>
             </div>
           </div>
 
           <!-- CATATAN TAMBAHAN -->
           <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Catatan Tambahan (Opsional)</label>
-            <textarea id="txNotes" rows="2" placeholder="Tuliskan nomor referensi, rincian pembayaran, atau status..." class="oneui-input w-full px-4 py-2.5 text-xs"></textarea>
+            <label class="block text-xs font-black app-heading-text mb-1.5">Catatan Tambahan (Opsional)</label>
+            <textarea id="txNotes" rows="2" placeholder="Catatan transaksi, metode belanja BCA / E-Wallet..." class="glass-input-theme w-full px-4 py-2.5 text-xs font-medium"></textarea>
           </div>
 
           <!-- SUBMIT BUTTON -->
-          <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 text-white font-bold text-sm shadow-lg shadow-sky-500/25 active:scale-[0.98] transition">
+          <button type="submit" class="w-full py-3.5 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 text-white font-black text-sm shadow-lg shadow-pink-600/30 active:scale-[0.98] transition">
             Simpan ke Buku Kas
           </button>
         </form>
       </div>
     </div>
 
-    <!-- ==================== TAB 4: KURS & EMAS TERKINI ==================== -->
+    <!-- ==================== TAB 4: PASAR & KURS ==================== -->
     <div id="viewMarket" class="space-y-6 hidden">
-      <div class="oneui-card p-6">
-        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+      <div class="glass-card-theme p-6">
+        <div class="flex items-center justify-between pb-4 border-b border-pink-400/20">
           <div>
-            <h2 class="brand-font text-xl font-bold text-white">Pasar Uang & Emas Terkini</h2>
-            <p id="marketTimestampText" class="text-xs text-slate-400">Data live diperbarui per hari ini</p>
+            <h2 class="brand-font text-xl font-black app-title-text">Pasar Uang & Emas Terkini</h2>
+            <p id="marketTimestampText" class="text-xs app-muted-text font-semibold">Data diperbarui hari ini</p>
           </div>
-          <button onclick="refreshMarketData()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/15 text-sky-400 transition flex items-center gap-1.5">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <button onclick="refreshMarketData()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold border" style="background: var(--badge-bg); color: var(--badge-text); border-color: var(--badge-border);">
             Segarkan
           </button>
         </div>
 
         <!-- EMAS ANTAM HERO CARD -->
-        <div class="mt-5 p-5 rounded-3xl bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-yellow-500/5 border border-amber-500/30 flex items-center justify-between">
+        <div class="mt-5 p-5 rounded-3xl border shadow-sm flex items-center justify-between" style="background: var(--tax-bg); border-color: var(--tax-border);">
           <div>
-            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Emas Murni Antam (per gram)</span>
-            <div id="goldPriceVal" class="text-2xl sm:text-3xl font-black text-amber-300 brand-font mt-1">Rp 1.488.000</div>
-            <p class="text-[11px] text-slate-300 mt-1">Standar acuan harga lindung nilai aset kas.</p>
+            <span class="text-xs font-black uppercase tracking-wider" style="color: var(--tax-title);">Emas Murni Antam (per gram)</span>
+            <div id="goldPriceVal" class="text-2xl sm:text-3xl font-black brand-font mt-1" style="color: var(--tax-num);">Rp 2.541.000</div>
+            <p class="text-[11px] font-bold mt-1" style="color: var(--tax-title);">Acuan resmi harga Logam Mulia Antam per gram.</p>
           </div>
-          <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 text-xl font-bold">
+          <div class="w-12 h-12 rounded-2xl bg-amber-500/30 border border-amber-500/50 flex items-center justify-center font-black text-xl shadow-sm" style="color: var(--tax-title);">
             Au
           </div>
         </div>
@@ -433,61 +734,61 @@
         <!-- 8 MATA UANG UTAMA GRID -->
         <div class="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
           <!-- USD -->
-          <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block font-medium">Dolar AS (USD)</span>
-            <div id="rateUSD" class="font-extrabold text-base text-white mt-1">Rp 15.845</div>
-            <span class="text-[10px] text-sky-400">1 USD = IDR</span>
+          <div class="glass-sub-card p-4 shadow-sm">
+            <span class="app-muted-text block font-bold">Dolar AS (USD)</span>
+            <div id="rateUSD" class="font-black text-base mt-1 app-title-text">Rp 18.120</div>
+            <span class="text-[10px] app-pink-text font-bold">1 USD = IDR</span>
           </div>
           <!-- EUR -->
-          <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block font-medium">Euro (EUR)</span>
-            <div id="rateEUR" class="font-extrabold text-base text-white mt-1">Rp 17.210</div>
-            <span class="text-[10px] text-sky-400">1 EUR = IDR</span>
+          <div class="glass-sub-card p-4 shadow-sm">
+            <span class="app-muted-text block font-bold">Euro (EUR)</span>
+            <div id="rateEUR" class="font-black text-base mt-1 app-title-text">Rp 20.275</div>
+            <span class="text-[10px] app-pink-text font-bold">1 EUR = IDR</span>
           </div>
           <!-- JPY -->
-          <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block font-medium">Yen Jepang (JPY)</span>
-            <div id="rateJPY" class="font-extrabold text-base text-white mt-1">Rp 103,50</div>
-            <span class="text-[10px] text-sky-400">1 JPY = IDR</span>
+          <div class="glass-sub-card p-4 shadow-sm">
+            <span class="app-muted-text block font-bold">Yen Jepang (JPY)</span>
+            <div id="rateJPY" class="font-black text-base mt-1 app-title-text">Rp 114,30</div>
+            <span class="text-[10px] app-pink-text font-bold">1 JPY = IDR</span>
           </div>
           <!-- MYR -->
-          <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block font-medium">Ringgit (MYR)</span>
-            <div id="rateMYR" class="font-extrabold text-base text-white mt-1">Rp 3.615</div>
-            <span class="text-[10px] text-sky-400">1 MYR = IDR</span>
+          <div class="glass-sub-card p-4 shadow-sm">
+            <span class="app-muted-text block font-bold">Ringgit (MYR)</span>
+            <div id="rateMYR" class="font-black text-base mt-1 app-title-text">Rp 4.446</div>
+            <span class="text-[10px] app-pink-text font-bold">1 MYR = IDR</span>
           </div>
           <!-- SGD -->
-          <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block font-medium">Dolar Singapura (SGD)</span>
-            <div id="rateSGD" class="font-extrabold text-base text-white mt-1">Rp 11.975</div>
-            <span class="text-[10px] text-sky-400">1 SGD = IDR</span>
+          <div class="glass-sub-card p-4 shadow-sm">
+            <span class="app-muted-text block font-bold">Dolar Singapura (SGD)</span>
+            <div id="rateSGD" class="font-black text-base mt-1 app-title-text">Rp 14.162</div>
+            <span class="text-[10px] app-pink-text font-bold">1 SGD = IDR</span>
           </div>
           <!-- CNY -->
-          <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block font-medium">Yuan Tiongkok (CNY)</span>
-            <div id="rateCNY" class="font-extrabold text-base text-white mt-1">Rp 2.215</div>
-            <span class="text-[10px] text-sky-400">1 CNY = IDR</span>
+          <div class="glass-sub-card p-4 shadow-sm">
+            <span class="app-muted-text block font-bold">Yuan Tiongkok (CNY)</span>
+            <div id="rateCNY" class="font-black text-base mt-1 app-title-text">Rp 2.725</div>
+            <span class="text-[10px] app-pink-text font-bold">1 CNY = IDR</span>
           </div>
           <!-- SAR -->
-          <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block font-medium">Riyal Saudi (SAR)</span>
-            <div id="rateSAR" class="font-extrabold text-base text-white mt-1">Rp 4.220</div>
-            <span class="text-[10px] text-sky-400">1 SAR = IDR</span>
+          <div class="glass-sub-card p-4 shadow-sm">
+            <span class="app-muted-text block font-bold">Riyal Saudi (SAR)</span>
+            <div id="rateSAR" class="font-black text-base mt-1 app-title-text">Rp 4.813</div>
+            <span class="text-[10px] app-pink-text font-bold">1 SAR = IDR</span>
           </div>
           <!-- IDR BASE -->
-          <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-            <span class="text-slate-400 block font-medium">Rupiah (IDR)</span>
-            <div class="font-extrabold text-base text-emerald-400 mt-1">Rp 1,00</div>
-            <span class="text-[10px] text-emerald-400">Mata Uang Acuan</span>
+          <div class="glass-sub-card p-4 shadow-sm">
+            <span class="app-muted-text block font-bold">Rupiah (IDR)</span>
+            <div class="font-black text-base text-emerald-700 dark:text-emerald-300 mt-1">Rp 1,00</div>
+            <span class="text-[10px] text-emerald-700 dark:text-emerald-300 font-bold">Mata Uang Acuan</span>
           </div>
         </div>
 
         <!-- SMART CONVERTER KALKULATOR -->
-        <div class="mt-6 pt-5 border-t border-white/10">
-          <h3 class="font-bold text-sm text-white mb-2">Kalkulator Konversi Cepat ke Rupiah</h3>
+        <div class="mt-6 pt-5 border-t border-pink-400/20">
+          <h3 class="font-black text-sm mb-2 app-title-text">Kalkulator Konversi Cepat ke Rupiah</h3>
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <input id="calcAmount" type="number" min="1" value="100" class="oneui-input px-3.5 py-2.5 text-xs" placeholder="Jumlah valuta">
-            <select id="calcCurrency" class="oneui-input px-3.5 py-2.5 text-xs bg-slate-900">
+            <input id="calcAmount" type="number" min="1" value="100" class="glass-input-theme px-3.5 py-2.5 text-xs font-bold" placeholder="Jumlah valuta">
+            <select id="calcCurrency" class="glass-input-theme px-3.5 py-2.5 text-xs font-bold">
               <option value="USD">Dolar AS (USD)</option>
               <option value="EUR">Euro (EUR)</option>
               <option value="SGD">Dolar Singapura (SGD)</option>
@@ -497,35 +798,367 @@
               <option value="SAR">Riyal Arab Saudi (SAR)</option>
               <option value="GOLD">Emas Antam (Gram)</option>
             </select>
-            <div class="oneui-input px-3.5 py-2.5 text-xs flex items-center justify-between font-bold text-emerald-400 bg-slate-950">
+            <div class="glass-input-theme px-3.5 py-2.5 text-xs flex items-center justify-between font-black text-emerald-800 dark:text-emerald-300 bg-emerald-500/10 border-emerald-500/30">
               <span>Hasil:</span>
-              <span id="calcResultDisplay">Rp 1.584.500</span>
+              <span id="calcResultDisplay">Rp 1.812.000</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ==================== TAB 5: CATATAN RILIS (CHANGELOG) ==================== -->
+    <!-- ==================== TAB 5: CATATAN RILIS ==================== -->
     <div id="viewChangelog" class="space-y-6 hidden">
-      <div class="oneui-card p-6">
-        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+      <div class="glass-card-theme p-6">
+        <div class="flex items-center justify-between pb-4 border-b border-pink-400/20">
           <div>
-            <h2 class="brand-font text-xl font-bold text-white">Catatan Rilis (Changelog)</h2>
-            <p class="text-xs text-slate-400">Riwayat pembaruan sistem dan fitur aplikasi (Maksimal 10 catatan)</p>
+            <h2 class="brand-font text-xl font-black app-title-text">Catatan Rilis (Changelog)</h2>
+            <p class="text-xs app-muted-text font-semibold">Riwayat pembaruan sistem dan fitur aplikasi (Maksimal 10 catatan)</p>
           </div>
-          <span class="px-3 py-1 rounded-full text-xs font-bold bg-sky-500/20 text-sky-400 border border-sky-500/30">
-            Versi Aktif: v1.0
+          <span class="px-3 py-1 rounded-full text-xs font-black border" style="background: var(--badge-bg); color: var(--badge-text); border-color: var(--badge-border);">
+            Versi Aktif: v1.0.9
           </span>
         </div>
-
         <div id="changelogListContainer" class="mt-5 space-y-4">
-          <!-- Rendered via JS (Max 10 records) -->
+          <!-- Rendered via JS -->
         </div>
       </div>
     </div>
 
+        <!-- ==================== TAB 6: YOUTUBE STUDIO ==================== -->
+    <div id="viewYouTube" class="space-y-6 hidden">
+      <div class="glass-card-theme p-6">
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-pink-400/20">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></span>
+              <h2 class="brand-font text-xl font-black app-title-text">YouTube Creator Studio</h2>
+            </div>
+            <p class="text-xs app-muted-text font-semibold mt-0.5 flex items-center gap-1.5 flex-wrap">
+              <span>Channel ID: <span class="font-mono font-bold text-red-600 dark:text-red-400">UCJz9YP6IFyrIeyhF7N3XCbg</span></span>
+              <span>•</span>
+              <span>Neilverse Official</span>
+            </p>
+          </div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <!-- Tombol Kelola Statistik Jam Tayang (Hanya Owner) -->
+            <button id="btnYtEditStats" onclick="openYtStatsModal()" class="hidden px-3.5 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 shadow-sm bg-amber-500/15 border-amber-500/40 text-amber-800 dark:text-amber-300 hover:scale-105 transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+              Input Jam Tayang
+            </button>
+            <!-- Tombol Tambah Video by Link (Hanya Owner) -->
+            <button id="btnYtAddVideo" onclick="openYtAddVideoModal()" class="hidden px-3.5 py-1.5 rounded-xl text-xs font-black border flex items-center gap-1.5 shadow-sm bg-red-600 text-white border-red-500 hover:bg-red-700 transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
+              + Tambah Video (By Link)
+            </button>
+            <!-- Tombol Bersihkan Semua Video (Hanya Owner) -->
+            <button id="btnYtClearAll" onclick="clearAllYouTubeVideos()" class="hidden px-3 py-1.5 rounded-xl text-xs font-bold border border-rose-500/40 bg-rose-500/15 text-rose-800 dark:text-rose-300 hover:bg-rose-500/25 transition">
+              Hapus Semua
+            </button>
+            <button onclick="refreshYouTubeData()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 shadow-sm" style="background: var(--badge-bg); color: var(--badge-text); border-color: var(--badge-border);">
+              <svg class="w-3.5 h-3.5 text-red-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0 0 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 0 0 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+              Segarkan
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 KARTU STATISTIK YOUTUBE (SUBSCRIBERS LIVE, PENAYANGAN LIVE, JAM TAYANG INPUT MANDIRI) -->
+        <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <!-- 1. SUBSCRIBERS LIVE -->
+          <div class="glass-sub-card p-5 border-red-500/30 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-[11px] font-black uppercase tracking-wider text-red-600 dark:text-red-400 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-red-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                Total Subscribers
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-red-500/15 border border-red-500/30 text-red-600 dark:text-red-400 font-black text-[10px] animate-pulse">
+                LIVE
+              </span>
+            </div>
+            <div id="ytSubscribersCount" class="text-3xl font-black brand-font tracking-tight app-title-text my-1">0</div>
+            <div class="pt-2 border-t border-slate-200 dark:border-pink-400/15 flex items-center justify-between text-[11px]">
+              <span class="app-muted-text font-bold">Sinkronisasi:</span>
+              <span id="ytSubDeltaText" class="text-emerald-700 dark:text-emerald-400 font-extrabold">Server YouTube Resmi</span>
+            </div>
+          </div>
+
+          <!-- 2. TOTAL PENAYANGAN LIVE (AKUMULASI VIDEO TERMASUK YANG DI-HIDE) -->
+          <div class="glass-sub-card p-5 border-pink-400/30 shadow-sm flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-[11px] font-black uppercase tracking-wider text-pink-700 dark:text-pink-300 flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                Total Penayangan (Live)
+              </span>
+              <span class="px-2 py-0.5 rounded-full bg-pink-500/15 border border-pink-400/30 text-pink-700 dark:text-pink-300 font-bold text-[10px]">
+                Semua Video
+              </span>
+            </div>
+            <div id="ytTotalViewsCount" class="text-3xl font-black brand-font tracking-tight app-title-text my-1">0</div>
+            <div class="pt-2 border-t border-slate-200 dark:border-pink-400/15 flex items-center justify-between text-[11px]">
+              <span class="app-muted-text font-bold">Termasuk video dihide:</span>
+              <span class="text-pink-700 dark:text-pink-300 font-extrabold">Terhitung Penuh</span>
+            </div>
+          </div>
+
+          <!-- 3. TOTAL JAM TAYANG (INPUT MANDIRI TARGET 4.000 JAM) -->
+          <div class="glass-sub-card p-5 border-amber-400/40 shadow-sm flex flex-col justify-between" style="background: var(--tax-bg); border-color: var(--tax-border);">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="text-[11px] font-black uppercase tracking-wider" style="color: var(--tax-title);">Total Jam Tayang</span>
+              <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/40" style="color: var(--tax-title);">Target 4.000 Jam</span>
+            </div>
+            <div class="flex items-baseline gap-1 my-1">
+              <span id="ytWatchHoursCount" class="text-3xl font-black brand-font tracking-tight" style="color: var(--tax-num);">0</span>
+              <span class="text-xs font-bold" style="color: var(--tax-title);">/ 4.000 Jam</span>
+            </div>
+            <div class="mt-2">
+              <div class="w-full h-2 rounded-full bg-amber-500/20 overflow-hidden">
+                <div id="ytWatchProgressBar" class="h-full bg-gradient-to-r from-amber-500 to-yellow-500 rounded-full" style="width: 0%;"></div>
+              </div>
+              <div class="flex justify-between items-center text-[10px] font-black mt-1.5" style="color: var(--tax-title);">
+                <span id="ytWatchPercentText">Progres: 0%</span>
+                <span id="ytWatchRemainText">Sisa 4.000 Jam</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NAVIGASI 4 HALAMAN / SUB-TAB KOLEKSI VIDEO YOUTUBE -->
+        <div class="mt-7 pt-5 border-t border-pink-400/20">
+          <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+            <!-- 4 SUB-TAB BUTTONS -->
+            <div class="flex items-center gap-1.5 p-1 rounded-2xl border border-pink-400/30 bg-white/60 dark:bg-zinc-900/60 overflow-x-auto max-w-full">
+              <button onclick="setYtSubCategoryTab('mv')" id="ySubTabMV" class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition shadow-sm bg-gradient-to-r from-pink-600 to-rose-600 text-white">
+                Official Music Video
+              </button>
+              <button onclick="setYtSubCategoryTab('album')" id="ySubTabAlbum" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition text-slate-700 dark:text-slate-200 hover:text-pink-600">
+                Official Full Album
+              </button>
+              <button onclick="setYtSubCategoryTab('shorts')" id="ySubTabShorts" class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition text-slate-700 dark:text-slate-200 hover:text-pink-600">
+                Shorts
+              </button>
+              <!-- Halaman Keempat: Khusus Owner (Semua Video Termasuk Hidden) -->
+              <button onclick="setYtSubCategoryTab('all_owner')" id="ySubTabAllOwner" class="hidden px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-amber-500/50 bg-amber-500/15 text-amber-800 dark:text-amber-200 hover:bg-amber-500/25">
+                Semua Video (Owner)
+              </button>
+            </div>
+
+            <!-- BADGE JUMLAH VIDEO -->
+            <span id="ytVideoCountBadge" class="text-[11px] font-black px-3 py-1 rounded-full border shadow-sm" style="background: var(--badge-bg); color: var(--badge-text); border-color: var(--badge-border);">
+              0 Video
+            </span>
+          </div>
+
+          <!-- Video Grid Container (Rendered via JS) -->
+          <div id="ytVideoFeedList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
+
+  <!-- ==================== MODAL EDIT TRANSAKSI ==================== -->
+  <div id="modalEdit" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-card-theme max-w-lg w-full p-6 relative border border-pink-400/50 shadow-2xl">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-pink-400/20">
+        <div>
+          <h3 class="font-black text-lg app-title-text">Koreksi / Edit Transaksi</h3>
+          <p class="text-xs app-muted-text font-semibold">Perbarui nominal, kategori, atau tanggal transaksi yang salah</p>
+        </div>
+        <button onclick="closeEditModal()" class="w-8 h-8 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center text-lg">&times;</button>
+      </div>
+
+      <form id="formEditTransaction" class="space-y-4">
+        <input type="hidden" id="editTxId">
+
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">Jenis Transaksi</label>
+          <select id="editTxType" onchange="onEditTypeChange()" class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+            <option value="INCOME">Pemasukan (Income)</option>
+            <option value="OUTCOME">Pengeluaran (Outcome)</option>
+            <option value="OWNER_INJECT">Suntikan Modal Owner</option>
+            <option value="OWNER_REPAY">Pengembalian Modal Owner</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">Kategori Transaksi</label>
+          <select id="editTxCategory" class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">Keterangan / Transaksi</label>
+          <input id="editTxDescription" type="text" required class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-medium">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-black app-heading-text mb-1">Nominal (Rupiah)</label>
+            <input id="editTxAmount" type="number" min="1" required class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+          </div>
+          <div>
+            <label class="block text-xs font-black app-heading-text mb-1">Tanggal</label>
+            <input id="editTxDate" type="date" required class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-semibold">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">Catatan</label>
+          <textarea id="editTxNotes" rows="2" class="glass-input-theme w-full px-3.5 py-2 text-xs font-medium"></textarea>
+        </div>
+
+        <div class="pt-3 flex gap-2">
+          <button type="button" onclick="closeEditModal()" class="flex-1 py-2.5 rounded-xl bg-black/10 dark:bg-white/10 text-xs font-bold hover:opacity-80">Batal</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 text-white text-xs font-black shadow-lg shadow-pink-600/30">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL LOGIN OWNER TERSEMBUNYI ==================== -->
+  <div id="modalOwnerLogin" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-card-theme max-w-sm w-full p-6 text-center border border-pink-400/50 shadow-2xl relative">
+      <div class="w-14 h-14 mx-auto rounded-3xl bg-pink-500/20 border border-pink-400/40 flex items-center justify-center text-2xl shadow-lg shadow-pink-500/30 mb-3">
+        🔐
+      </div>
+      <h3 class="font-black text-lg app-title-text">Akses Kredensial Owner</h3>
+      <p class="text-xs app-muted-text mt-1 mb-4 font-semibold">Masukkan PIN keamanan untuk membuka hak akses edit dan catat arus kas.</p>
+
+      <form id="formOwnerLogin" onsubmit="handleOwnerLogin(event)" class="space-y-4">
+        <div>
+          <input id="inputOwnerPin" type="password" maxlength="6" placeholder="Masukkan 6 Digit PIN" required class="glass-input-theme w-full px-4 py-3 text-center text-base tracking-widest font-mono font-black">
+        </div>
+        <div class="flex gap-2">
+          <button type="button" onclick="closeOwnerModal()" class="flex-1 py-2.5 rounded-xl bg-black/10 dark:bg-white/10 text-xs font-bold hover:opacity-80">Tutup</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 text-white text-xs font-black shadow-lg shadow-pink-600/30">Buka Kunci</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+      <!-- ==================== MODAL TAMBAH VIDEO YOUTUBE (BY LINK) ==================== -->
+  <div id="modalAddYouTubeVideo" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-card-theme max-w-lg w-full p-6 relative border border-pink-400/50 shadow-2xl">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-pink-400/20">
+        <div>
+          <h3 class="font-black text-lg app-title-text">Tambah Video YouTube</h3>
+          <p class="text-xs app-muted-text font-semibold">Masukkan link video YouTube untuk menambahkan ke koleksi</p>
+        </div>
+        <button onclick="closeYtAddVideoModal()" class="w-8 h-8 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center text-lg">&times;</button>
+      </div>
+
+      <form id="formAddYouTubeVideo" onsubmit="handleSaveYouTubeVideo(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">Tautan / Link Video YouTube</label>
+          <input id="inputYtUrl" type="url" placeholder="Contoh: https://www.youtube.com/watch?v=... atau https://youtu.be/..." required class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-semibold">
+          <span class="text-[10px] app-muted-text mt-1 block">Mendukung format video biasa, Shorts, atau album YouTube.</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">Judul Video</label>
+          <input id="inputYtTitle" type="text" placeholder="Masukkan judul video karya Neilverse..." required class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-black app-heading-text mb-1">Kategori Halaman</label>
+            <select id="selectYtCategory" class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+              <option value="Official Music Video">Official Music Video</option>
+              <option value="Official Full Album">Official Full Album</option>
+              <option value="Shorts">Shorts</option>
+              <option value="Creative Project">Creative Project</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-black app-heading-text mb-1">Status Publikasi</label>
+            <select id="selectYtVisibility" class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+              <option value="visible">Tampilkan di Publik</option>
+              <option value="hidden">Sembunyikan (Hide)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-black app-heading-text mb-1">Estimasi Tayangan (Views)</label>
+            <input id="inputYtViews" type="number" min="0" placeholder="Contoh: 15400" class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+            <span class="text-[9px] app-muted-text mt-0.5 block font-semibold">*Views tetap dihitung meski dihide</span>
+          </div>
+          <div>
+            <label class="block text-xs font-black app-heading-text mb-1">Durasi Video (Opsional)</label>
+            <input id="inputYtDuration" type="text" placeholder="Contoh: 04:30" class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-medium">
+          </div>
+        </div>
+
+        <div class="pt-3 flex gap-2">
+          <button type="button" onclick="closeYtAddVideoModal()" class="flex-1 py-2.5 rounded-xl bg-black/10 dark:bg-white/10 text-xs font-bold hover:opacity-80">Batal</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white text-xs font-black shadow-lg shadow-red-600/30">Simpan Video</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL EDIT JAM TAYANG & METRIK YOUTUBE ==================== -->
+  <div id="modalEditYtStats" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-card-theme max-w-sm w-full p-6 relative border border-pink-400/50 shadow-2xl">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-pink-400/20">
+        <div>
+          <h3 class="font-black text-lg app-title-text">Kelola Statistik Channel</h3>
+          <p class="text-xs app-muted-text font-semibold">Perbarui angka subscriber, views 365 hari, dan jam tayang</p>
+        </div>
+        <button onclick="closeYtStatsModal()" class="w-8 h-8 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center text-lg">&times;</button>
+      </div>
+
+      <form id="formEditYtStats" onsubmit="handleSaveYtStats(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">Total Subscribers Realtime</label>
+          <input id="inputStatSubscribers" type="number" min="0" placeholder="Masukkan jumlah subscriber asli..." required class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">Penayangan 365 Hari Terakhir (Views)</label>
+          <input id="inputStatViews365" type="number" min="0" placeholder="Masukkan views 365 hari terakhir..." required class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+        </div>
+
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">Total Jam Tayang Riil (Watch Hours)</label>
+          <input id="inputStatWatchHours" type="number" min="0" max="4000" step="any" placeholder="Contoh: 1420 (Target 4.000 jam)" required class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-bold">
+          <span class="text-[10px] app-muted-text mt-1 block font-semibold">Otomatis menghitung persentase progres bar dan sisa jam tayang.</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-black app-heading-text mb-1">YouTube Data API Key (Opsional)</label>
+          <input id="inputStatApiKey" type="password" placeholder="Tempel Google API Key untuk auto-sync..." class="glass-input-theme w-full px-3.5 py-2.5 text-xs font-mono">
+          <span class="text-[10px] app-muted-text mt-1 block">Jika diisi, aplikasi akan otomatis mem-fetch subscribers dan views live.</span>
+        </div>
+
+        <div class="pt-3 flex gap-2">
+          <button type="button" onclick="closeYtStatsModal()" class="flex-1 py-2.5 rounded-xl bg-black/10 dark:bg-white/10 text-xs font-bold hover:opacity-80">Batal</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-600 text-white text-xs font-black shadow-lg shadow-amber-600/30">Simpan Statistik</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL PEMUTAR VIDEO YOUTUBE ==================== -->
+  <div id="modalYouTubePlayer" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-card-theme max-w-2xl w-full p-4 sm:p-5 relative border border-pink-400/50 shadow-2xl">
+      <div class="flex justify-between items-center mb-3 pb-2 border-b border-pink-400/20">
+        <div class="min-w-0 pr-3">
+          <h3 id="modalVideoTitle" class="font-black text-base app-title-text truncate">Memutar Video...</h3>
+          <span id="modalVideoMeta" class="text-xs app-muted-text font-bold"></span>
+        </div>
+        <button onclick="closeVideoModal()" class="w-8 h-8 rounded-full bg-black/10 dark:bg-white/10 flex items-center justify-center text-lg font-bold shrink-0 hover:opacity-80">&times;</button>
+      </div>
+
+      <!-- Iframe Video Container 16:9 -->
+      <div class="w-full aspect-video rounded-2xl overflow-hidden bg-black shadow-inner">
+        <iframe id="ytPlayerIframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
 
   <!-- ==================== MACOS FLOATING DOCK ==================== -->
   <nav class="macos-dock">
@@ -537,11 +1170,16 @@
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
       <span class="text-[9px] font-bold mt-0.5">Bulanan</span>
     </button>
-    <button onclick="switchTab('tabRecord')" id="dockRecord" class="dock-btn" title="Catat Transaksi">
-      <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 text-white flex items-center justify-center font-bold shadow-md shadow-sky-500/30">
+    <!-- Tombol Catat di Dock (Hanya Tampil saat Mode Owner Aktif) -->
+    <button onclick="switchTab('tabRecord')" id="dockRecord" class="dock-btn hidden" title="Catat Transaksi">
+      <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-pink-600 to-rose-600 text-white flex items-center justify-center font-bold shadow-md shadow-pink-600/40">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/></svg>
       </div>
       <span class="text-[9px] font-bold mt-0.5">Catat</span>
+    </button>
+    <button onclick="switchTab('tabYouTube')" id="dockYouTube" class="dock-btn" title="YouTube Studio">
+      <svg class="w-5 h-5 text-red-600" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      <span class="text-[9px] font-bold mt-0.5">YouTube</span>
     </button>
     <button onclick="switchTab('tabMarket')" id="dockMarket" class="dock-btn" title="Kurs & Emas">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -553,7 +1191,7 @@
     </button>
   </nav>
 
-  <!-- ==================== LOGIKA SISTEM JAVASCRIPT ==================== -->
+  <!-- ==================== LOGIKA JAVASCRIPT SISTEM ==================== -->
   <script>
     // Konfigurasi Database Firebase Khusus NeilBook Cashflow
     const FIREBASE_CONFIG = {
@@ -569,82 +1207,204 @@
     let firebaseDb = null;
     let rtdbCashflowRef = null;
 
-    const STORAGE_KEY = 'neilbook_cashflow_data_v1';
+    const STORAGE_KEY = 'neilbook_cashflow_records_v108';
+    const ROLE_KEY = 'neilbook_cashflow_active_role';
+    const THEME_KEY = 'neilbook_cashflow_theme_mode';
+    const OWNER_PIN = '230293'; // PIN Akses Mode Owner
+
+    // State Aplikasi
     let transactions = [];
+    let isOwner = false;
+    let secretTapCount = 0;
+    let secretTapTimer = null;
     let currentFormType = 'INCOME';
     let cashflowChart = null;
 
     // Kategori Sesuai Permintaan
     const CATEGORIES = {
-      INCOME: ["Sponsor Video", "YouTube AdSense"],
+      INCOME: ["Penjualan Aplikasi / Software", "Sponsor Video", "YouTube AdSense"],
       OUTCOME: ["Grok Premium", "CapCut Pro", "Music Production", "Iklan", "Gaji Tim Kreatif"],
-      OWNER_INJECT: ["Suntikan Modal Owner"],
-      OWNER_REPAY: ["Pengembalian Modal Owner"]
+      OWNER_INJECT: ["Modal dari Ony S", "Modal dari Neil A"],
+      OWNER_REPAY: ["Pengembalian Modal Ony S", "Pengembalian Modal Neil A"]
     };
 
-    // Kurs & Emas Data (Realtime / Updated Per Hari Ini)
+    // Kurs & Emas Data Realtime Per Hari Ini (November 2026)
     const MARKET_DATA = {
-      GOLD: 1488000,
-      USD: 15845,
-      EUR: 17210,
-      JPY: 103.50,
-      MYR: 3615,
-      SGD: 11975,
-      CNY: 2215,
-      SAR: 4220,
+      GOLD: 2541000,
+      USD: 18120,
+      EUR: 20275,
+      JPY: 114.30,
+      MYR: 4446,
+      SGD: 14162,
+      CNY: 2725,
+      SAR: 4813,
       IDR: 1
     };
 
-    // Catatan Rilis Resmi (Maksimal 10 Catatan, Judul v1.0)
+    // Catatan Rilis Resmi v1.0.5 (Maksimal 10 Catatan)
     const CHANGELOGS = [
       {
-        version: "v1.0",
-        date: "03 November 2026",
-        title: "Peluncuran Resmi NeilBook Cashflow",
+        version: "v1.0.9",
+        date: "04 November 2026",
+        title: "Pembaruan v1.0.9: 4 Sub-Halaman Video, Sistem Show/Hide & Penayangan Akumulatif Penuh",
         items: [
-          "Desain antarmuka baru ergonomis berbasis Samsung One UI & dock mengapung macOS.",
-          "Sistem alokasi khusus Uang Kas Perusahaan & Akuntansi Piutang Modal Owner.",
-          "Kategori transaksi terstandar: Sponsor Video, YouTube AdSense, Grok Premium, CapCut Pro, Music Production, Iklan, Gaji Tim Kreatif.",
-          "Pembaruan data live Emas Murni Antam dan 8 mata uang utama dunia (USD, EUR, JPY, MYR, SGD, CNY, SAR, IDR).",
-          "Kalkulator konversi cepat valuta asing ke Rupiah.",
-          "Rincian pembukuan bulanan mulai Oktober 2026 dengan kunci batas input tanggal masa depan.",
-          "Integrasi sinkronisasi cloud Firebase Realtime Database khusus neilbook-cashflow."
+          "Navigasi 4 sub-halaman video: Official Music Video, Official Full Album, Shorts, dan Semua Video (khusus owner).",
+          "Fitur Show / Hide untuk setiap video: bebas memilih video yang ingin ditampilkan ke publik atau disembunyikan.",
+          "Akumulasi penayangan penuh: penayangan dari video yang dihide tetap 100% dihitung masuk ke kartu Total Penayangan atas.",
+          "Total Subscribers live terhubung langsung ke YouTube Data API v3 resmi Neilverse.",
+          "Total Jam Tayang input mandiri oleh Owner dengan kalkulasi progres bar target 4.000 jam."
+        ]
+      },
+      {
+        version: "v1.0.8",
+        date: "04 November 2026",
+        title: "Pembaruan v1.0.8: Perbaikan Penghapusan Video YouTube & Tombol Bersihkan Semua",
+        items: [
+          "Perbaikan sistem identitas unik video (UID) sehingga video manual dapat dihapus secara permanen.",
+          "Penambahan tombol 'Bersihkan Semua' untuk mengosongkan seluruh daftar video terdaftar sekaligus.",
+          "Pencegahan pemanggilan ulang otomatis yang menyebabkan video lama muncul kembali.",
+          "Pembersihan propagasi event klik pada tombol hapus agar tidak memicu pemutar video."
+        ]
+      },
+      {
+        version: "v1.0.7",
+        date: "04 November 2026",
+        title: "Pembaruan v1.0.7: Integrasi Channel YouTube Neilverse, Slot Video Tak Terbatas & Jam Tayang",
+        items: [
+          "Integrasi resmi Channel ID YouTube Neilverse (UCJz9YP6IFyrIeyhF7N3XCbg).",
+          "Penambahan slot rilis video tanpa batas yang dapat ditambahkan langsung menggunakan tautan/link video YouTube.",
+          "Label karya konten berbahasa Inggris (Official Video Clip, Official Music Video, Original Content, Creative Project).",
+          "Pelacak statistik metrik: Penayangan 365 hari terakhir dan input mandiri Total Jam Tayang menuju target 4.000 jam.",
+          "Penyempurnaan subtitle aplikasi dan pemutar video bawaan (embedded player) tanpa iklan luar."
+        ]
+      },
+      {
+        version: "v1.0.6",
+        date: "04 November 2026",
+        title: "Pembaruan v1.0.6: Laman Khusus Analitik YouTube Creator & Pemutar Video Realtime",
+        items: [
+          "Penambahan menu dan laman khusus YouTube Creator Studio di floating dock macOS.",
+          "Pemantauan statistik channel: jumlah subscriber, total tayangan/views, dan progres target jam tayang (watch hours).",
+          "Daftar rilis video terbaru disertai penayangan views realtime.",
+          "Fitur pemutar video bawaan (embedded player) sehingga video YouTube dapat diputar langsung di dalam aplikasi.",
+          "Sinkronisasi real-time cloud database Firebase terdedikasi."
+        ]
+      },
+      {
+        version: "v1.0.5",
+        date: "04 November 2026",
+        title: "Pembaruan v1.0.5: Jam & Kalender Minimalis Serta Desain Awan Komik Estetik",
+        items: [
+          "Penambahan widget jam & kalender digital minimalis live di area header utama.",
+          "Desain latar belakang awan komik tebal berwarna (aesthetic colorful comic clouds) yang dinamis dan segar.",
+          "Penyederhanaan bar navigasi atas dengan tata letak bersih dan proporsional.",
+          "Optimalisasi performa render grafik dan pembersihan bug tata letak kartu pajak gepeng.",
+          "Sinkronisasi real-time cloud database Firebase terdedikasi."
+        ]
+      },
+      {
+        version: "v1.0.4",
+        date: "04 November 2026",
+        title: "Pembaruan v1.0.4: Desain Gepeng Kartu Pajak, Optimalisasi Arus Kas & Pembersihan Bug",
+        items: [
+          "Restrukturisasi kartu Pajak 12% menjadi lebih gepeng, ramping, dan proporsional sehingga menghilangkan ruang kosong pada kartu kas utama.",
+          "Pembersihan bug tata letak teks terpotong dan normalisasi padding elemen kartu.",
+          "Optimalisasi sistem render antarmuka dan perbaikan rendering grafik pada mode terang dan gelap OLED."
+        ]
+      },
+      {
+        version: "v1.0.3",
+        date: "03 November 2026",
+        title: "Pembaruan v1.0.3: Kontras Tipografi Tinggi & Perhitungan Pajak Belanja Tools 12%",
+        items: [
+          "Penyesuaian kontras teks tinggi pada tema terang dan gelap agar seluruh angka, badge, dan keterangan terbaca sangat jelas.",
+          "Perhitungan Pajak 12% untuk Negara (PPN) kini menghitung akumulatif dari seluruh pengeluaran belanja tools operasional.",
+          "Pembaruan tampilan kartu UANG KAS NEILVERSE dan kolom PAJAK 12% UNTUK NEGARA dengan warna kontras amber pekat."
         ]
       }
     ];
 
-    // Format Rupiah Standar
-    function formatIDR(amount) {
-      return new Intl.NumberFormat('id-ID', {
-        style: 'currency',
-        currency: 'IDR',
-        maximumFractionDigits: 0
-      }).format(amount || 0);
+    // Helper Tanggal Lokal Presisi (Mengatasi bug UTC timezone)
+    function getLocalDateString(d = new Date()) {
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
     }
 
-    // Inisialisasi Firebase & Sinkronisasi
+    // Format Rupiah Standar Titik (Contoh: Rp 1.000.000)
+    function formatIDR(amount) {
+      const num = Math.round(Number(amount) || 0);
+      return 'Rp ' + num.toLocaleString('id-ID');
+    }
+
+    // Live Jam & Kalender Minimalis (Contoh: 4:06 | Rabu, 4 November 2026)
+    function updateLiveClock() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const timeStr = `${hours}:${minutes}`;
+
+      const dateStr = now.toLocaleDateString('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+
+      const el = document.getElementById('liveClockWidget');
+      if (el) {
+        el.textContent = `${timeStr} | ${dateStr}`;
+      }
+    }
+
+    // Theme Switcher (Light Pink Pastel Milk vs Dark OLED)
+    function initTheme() {
+      const saved = localStorage.getItem(THEME_KEY) || 'light';
+      setTheme(saved);
+    }
+
+    function setTheme(mode) {
+      if (mode === 'dark') {
+        document.documentElement.classList.add('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.setAttribute('data-theme', 'light');
+      }
+      localStorage.setItem(THEME_KEY, mode);
+      const icon = document.getElementById('themeIcon');
+      if (icon) {
+        icon.textContent = mode === 'light' ? '🌙' : '☀️';
+      }
+      renderChart();
+    }
+
+    function toggleTheme() {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'light' ? 'dark' : 'light';
+      setTheme(next);
+    }
+
+    // Inisialisasi Firebase & Sinkronisasi Realtime
     function initFirebase() {
       try {
         const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
         firebaseDb = firebase.database();
         rtdbCashflowRef = firebaseDb.ref('cashflow/transactions');
 
-        // Listener Realtime
         rtdbCashflowRef.on('value', snapshot => {
           const val = snapshot.val();
           if (val && typeof val === 'object') {
             transactions = Object.values(val);
-          } else if (!val && transactions.length > 0) {
-            // Upload data awal ke cloud jika database kosong
-            transactions.forEach(t => {
-              if (t && t.id) rtdbCashflowRef.child(t.id).set(t).catch(() => {});
-            });
+          } else if (val === null) {
+            transactions = [];
           }
           saveLocalCache();
           refreshAllUI();
           updateCloudBadge(true);
         }, err => {
-          console.warn('Koneksi Firebase offline:', err);
+          console.warn('Firebase offline:', err);
           updateCloudBadge(false);
         });
       } catch (err) {
@@ -658,10 +1418,10 @@
       const txt = document.getElementById('cloudStatusText');
       if (dot && txt) {
         if (online) {
-          dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+          dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-pulse';
           txt.textContent = 'Terhubung';
         } else {
-          dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          dot.className = 'w-2 h-2 rounded-full bg-amber-500';
           txt.textContent = 'Mode Lokal';
         }
       }
@@ -673,191 +1433,181 @@
       } catch (_) {}
     }
 
-    // Memuat Data Awal (Mencakup riwayat riil Oktober 2026 & November 2026)
     function loadInitialData() {
       try {
         const cached = localStorage.getItem(STORAGE_KEY);
-        if (cached) {
-          transactions = JSON.parse(cached);
-        } else {
-          // Data historis riil:
-          // Oktober 2026: Modal Owner 2.400.000 disuntikkan, dan langsung dibelanjakan untuk Operasional (outcome) 2.400.000
-          // November 2026: Income 350.000 baru berjalan
-          transactions = [
-            {
-              id: 'tx_okt_inject',
-              type: 'OWNER_INJECT',
-              category: 'Suntikan Modal Owner',
-              title: 'Suntikan Modal Awal Operasional',
-              amount: 2400000,
-              date: '2026-10-05',
-              notes: 'Talangan modal pribadi untuk operasional tim & tools Oktober',
-              timestamp: 1728115200000
-            },
-            {
-              id: 'tx_okt_tools',
-              type: 'OUTCOME',
-              category: 'Grok Premium',
-              title: 'Langganan Grok Premium & Tools AI',
-              amount: 400000,
-              date: '2026-10-08',
-              notes: 'Operasional riset konten',
-              timestamp: 1728374400000
-            },
-            {
-              id: 'tx_okt_capcut',
-              type: 'OUTCOME',
-              category: 'CapCut Pro',
-              title: 'Langganan CapCut Pro Editing',
-              amount: 150000,
-              date: '2026-10-10',
-              notes: 'Lisensi editing video',
-              timestamp: 1728547200000
-            },
-            {
-              id: 'tx_okt_team',
-              type: 'OUTCOME',
-              category: 'Gaji Tim Kreatif',
-              title: 'Honor Produksi & Tim Kreatif',
-              amount: 1850000,
-              date: '2026-10-25',
-              notes: 'Produksi konten batch Oktober',
-              timestamp: 1729843200000
-            },
-            {
-              id: 'tx_nov_income',
-              type: 'INCOME',
-              category: 'YouTube AdSense',
-              title: 'Pendapatan Awal AdSense November',
-              amount: 350000,
-              date: '2026-11-02',
-              notes: 'Pemasukan pertama yang mulai berjalan di November',
-              timestamp: 1730534400000
-            }
-          ];
-          saveLocalCache();
-        }
+        transactions = cached ? JSON.parse(cached) : [];
       } catch (e) {
         transactions = [];
       }
+
+      isOwner = localStorage.getItem(ROLE_KEY) === 'OWNER';
+      updateRoleUI();
     }
 
-    // Refresh Tampilan Menyeluruh
     function refreshAllUI() {
       calculateMetrics();
       renderRecentTransactions();
       renderMonthlyReport();
+      updateYouTubeOwnerButtons();
       renderChart();
     }
 
-    // Perhitungan Metrik Kas, Modal Owner & All-Time
+    // Perhitungan Kas Neilverse, Pajak 12% Pengeluaran/Tools, Modal Ony S & Neil A, All-Time
     function calculateMetrics() {
       let cashOnHand = 0;
-      let totalOwnerInjected = 0;
-      let totalOwnerRepaid = 0;
+      let totalTaxFromExpenses = 0;
+      let onyInjected = 0;
+      let onyRepaid = 0;
+      let neilInjected = 0;
+      let neilRepaid = 0;
       let allTimeIncome = 0;
       let allTimeOutcome = 0;
 
       transactions.forEach(t => {
         const amt = Number(t.amount || 0);
+        const cat = t.category || '';
+
         if (t.type === 'OWNER_INJECT') {
           cashOnHand += amt;
-          totalOwnerInjected += amt;
+          if (cat.includes('Neil')) {
+            neilInjected += amt;
+          } else {
+            onyInjected += amt;
+          }
         } else if (t.type === 'OWNER_REPAY') {
           cashOnHand -= amt;
-          totalOwnerRepaid += amt;
+          if (cat.includes('Neil')) {
+            neilRepaid += amt;
+          } else {
+            onyRepaid += amt;
+          }
         } else if (t.type === 'INCOME') {
           cashOnHand += amt;
           allTimeIncome += amt;
         } else if (t.type === 'OUTCOME') {
           cashOnHand -= amt;
           allTimeOutcome += amt;
+          totalTaxFromExpenses += (amt * 0.12);
         }
       });
 
-      const ownerDebtRemaining = Math.max(0, totalOwnerInjected - totalOwnerRepaid);
+      const onyDebt = Math.max(0, onyInjected - onyRepaid);
+      const neilDebt = Math.max(0, neilInjected - neilRepaid);
       const allTimeProfit = allTimeIncome - allTimeOutcome;
 
-      // Update Tampilan DOM
+      // Update Tampilan DOM Kas & Pajak 12%
       document.getElementById('displayCashOnHand').textContent = formatIDR(cashOnHand);
-      document.getElementById('displayOwnerInjected').textContent = formatIDR(totalOwnerInjected);
-      document.getElementById('displayOwnerRepaid').textContent = formatIDR(totalOwnerRepaid);
-      document.getElementById('displayOwnerDebt').textContent = formatIDR(ownerDebtRemaining);
+      document.getElementById('displayTaxCollected').textContent = formatIDR(totalTaxFromExpenses);
 
-      const statusBadge = document.getElementById('badgeOwnerStatus');
-      if (ownerDebtRemaining === 0 && totalOwnerInjected > 0) {
-        statusBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300';
-        statusBadge.textContent = 'Lunas (Rp 0)';
+      // Modal Ony S
+      document.getElementById('displayOnyInjected').textContent = formatIDR(onyInjected);
+      document.getElementById('displayOnyRepaid').textContent = formatIDR(onyRepaid);
+      document.getElementById('displayOnyDebt').textContent = formatIDR(onyDebt);
+      const badgeOny = document.getElementById('badgeOnyStatus');
+      if (onyDebt === 0) {
+        badgeOny.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-500/40';
+        badgeOny.textContent = 'Lunas (Rp 0)';
       } else {
-        statusBadge.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300';
-        statusBadge.textContent = 'Belum Lunas';
+        badgeOny.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-200 border border-amber-500/40';
+        badgeOny.textContent = 'Belum Lunas';
       }
 
+      // Modal Neil A
+      document.getElementById('displayNeilInjected').textContent = formatIDR(neilInjected);
+      document.getElementById('displayNeilRepaid').textContent = formatIDR(neilRepaid);
+      document.getElementById('displayNeilDebt').textContent = formatIDR(neilDebt);
+      const badgeNeil = document.getElementById('badgeNeilStatus');
+      if (neilDebt === 0) {
+        badgeNeil.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-500/40';
+        badgeNeil.textContent = 'Lunas (Rp 0)';
+      } else {
+        badgeNeil.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-200 border border-amber-500/40';
+        badgeNeil.textContent = 'Belum Lunas';
+      }
+
+      // Metrik All-Time
       document.getElementById('displayAllTimeIncome').textContent = formatIDR(allTimeIncome);
       document.getElementById('displayAllTimeOutcome').textContent = formatIDR(allTimeOutcome);
-      
+
       const profitEl = document.getElementById('displayAllTimeProfit');
       profitEl.textContent = formatIDR(allTimeProfit);
       if (allTimeProfit >= 0) {
-        profitEl.className = 'text-xl sm:text-2xl font-extrabold text-cyan-400 mt-2';
+        profitEl.className = 'text-2xl font-black app-pink-text mt-2';
       } else {
-        profitEl.className = 'text-xl sm:text-2xl font-extrabold text-rose-400 mt-2';
+        profitEl.className = 'text-2xl font-black text-rose-800 dark:text-rose-400 mt-2';
       }
     }
 
-    // Render Riwayat Transaksi Terbaru di Dashboard
+    // Render Riwayat Transaksi Terbaru
     function renderRecentTransactions() {
       const container = document.getElementById('recentTxContainer');
       const sorted = [...transactions].sort((a, b) => new Date(b.date || b.timestamp) - new Date(a.date || a.timestamp));
 
       if (sorted.length === 0) {
-        container.innerHTML = '<div class="py-8 text-center text-xs text-slate-500">Belum ada transaksi tercatat.</div>';
+        container.innerHTML = `
+          <div class="py-12 text-center text-xs font-bold app-muted-text">
+            Belum ada transaksi tercatat. Saldo kas saat ini Rp 0.
+            ${isOwner ? '<br><span class="app-pink-text font-black mt-1 inline-block">Gunakan menu Catat untuk memasukkan transaksi awal.</span>' : ''}
+          </div>
+        `;
         return;
       }
 
-      const latest = sorted.slice(0, 5);
+      const latest = sorted.slice(0, 10);
       container.innerHTML = latest.map(t => {
-        let badgeColor = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+        let badgeColor = 'text-emerald-800 dark:text-emerald-300 bg-emerald-500/15 border-emerald-500/40';
         let prefix = '+';
-        let typeLabel = 'Pemasukan';
 
         if (t.type === 'OUTCOME') {
-          badgeColor = 'text-rose-400 bg-rose-500/10 border-rose-500/20';
+          badgeColor = 'text-rose-800 dark:text-rose-300 bg-rose-500/15 border-rose-500/40';
           prefix = '-';
-          typeLabel = 'Pengeluaran';
         } else if (t.type === 'OWNER_INJECT') {
-          badgeColor = 'text-sky-400 bg-sky-500/10 border-sky-500/20';
+          badgeColor = 'text-pink-800 dark:text-pink-300 bg-pink-500/15 border-pink-500/40';
           prefix = '+';
-          typeLabel = 'Modal Owner';
         } else if (t.type === 'OWNER_REPAY') {
-          badgeColor = 'text-amber-400 bg-amber-500/10 border-amber-500/20';
+          badgeColor = 'text-amber-800 dark:text-amber-300 bg-amber-500/15 border-amber-500/40';
           prefix = '-';
-          typeLabel = 'Kembalikan Modal';
         }
 
+        const isOutcome = t.type === 'OUTCOME';
+        const taxVal = isOutcome ? Number(t.amount || 0) * 0.12 : 0;
+
         return `
-          <div class="p-3.5 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between gap-3">
+          <div class="glass-sub-card p-3.5 flex items-center justify-between gap-3 shadow-sm">
             <div class="min-w-0">
-              <div class="flex items-center gap-2">
-                <span class="text-sm font-bold text-white truncate">${escapeHTML(t.title)}</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="text-sm font-black app-title-text truncate">${escapeHTML(t.title)}</span>
+                <span class="text-[10px] font-black px-2 py-0.5 rounded-full border ${badgeColor}">
                   ${escapeHTML(t.category)}
                 </span>
+                ${isOutcome ? `<span class="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-500/40">Pajak 12%: ${formatIDR(taxVal)}</span>` : ''}
               </div>
-              <div class="text-xs text-slate-400 mt-0.5 flex items-center gap-2">
+              <div class="text-xs app-muted-text mt-1 flex items-center gap-2 font-bold">
                 <span>${t.date || 'Hari ini'}</span>
-                ${t.notes ? `<span>•</span><span class="truncate max-w-[180px]">${escapeHTML(t.notes)}</span>` : ''}
+                ${t.notes ? `<span>•</span><span class="truncate max-w-[200px]">${escapeHTML(t.notes)}</span>` : ''}
               </div>
             </div>
-            <div class="font-extrabold text-sm ${t.type === 'OUTCOME' || t.type === 'OWNER_REPAY' ? 'text-rose-400' : 'text-emerald-400'} shrink-0">
-              ${prefix} ${formatIDR(t.amount)}
+
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="font-black text-sm sm:text-base ${t.type === 'OUTCOME' || t.type === 'OWNER_REPAY' ? 'text-rose-800 dark:text-rose-300' : 'text-emerald-800 dark:text-emerald-300'}">
+                ${prefix} ${formatIDR(t.amount)}
+              </div>
+              ${isOwner ? `
+                <button onclick="openEditModal('${t.id}')" class="p-1.5 rounded-lg bg-pink-500/15 text-pink-700 dark:text-pink-300 hover:bg-pink-500/25 transition" title="Edit Transaksi">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                </button>
+                <button onclick="deleteTransaction('${t.id}')" class="p-1.5 rounded-lg bg-rose-500/15 text-rose-700 dark:text-rose-300 hover:bg-rose-500/25 transition" title="Hapus Transaksi">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              ` : ''}
             </div>
           </div>
         `;
       }).join('');
     }
 
-    // Render Rincian Per Bulan (Mulai Oktober 2026)
+    // Render Rincian Per Bulan
     function renderMonthlyReport() {
       const container = document.getElementById('monthlyListContainer');
       const monthlyGroups = {};
@@ -865,7 +1615,7 @@
       transactions.forEach(t => {
         const d = new Date(t.date || t.timestamp);
         const y = d.getFullYear();
-        const m = d.getMonth(); // 0-indexed
+        const m = d.getMonth();
         const monthKey = `${y}-${String(m + 1).padStart(2, '0')}`;
         const monthTitle = d.toLocaleDateString('id-ID', { month: 'long', year: 'numeric' });
 
@@ -877,15 +1627,22 @@
             outcome: 0,
             ownerInject: 0,
             ownerRepay: 0,
+            taxAmount: 0,
             items: []
           };
         }
 
         const amt = Number(t.amount || 0);
-        if (t.type === 'INCOME') monthlyGroups[monthKey].income += amt;
-        else if (t.type === 'OUTCOME') monthlyGroups[monthKey].outcome += amt;
-        else if (t.type === 'OWNER_INJECT') monthlyGroups[monthKey].ownerInject += amt;
-        else if (t.type === 'OWNER_REPAY') monthlyGroups[monthKey].ownerRepay += amt;
+        if (t.type === 'INCOME') {
+          monthlyGroups[monthKey].income += amt;
+        } else if (t.type === 'OUTCOME') {
+          monthlyGroups[monthKey].outcome += amt;
+          monthlyGroups[monthKey].taxAmount += (amt * 0.12);
+        } else if (t.type === 'OWNER_INJECT') {
+          monthlyGroups[monthKey].ownerInject += amt;
+        } else if (t.type === 'OWNER_REPAY') {
+          monthlyGroups[monthKey].ownerRepay += amt;
+        }
 
         monthlyGroups[monthKey].items.push(t);
       });
@@ -893,7 +1650,7 @@
       const sortedKeys = Object.keys(monthlyGroups).sort().reverse();
 
       if (sortedKeys.length === 0) {
-        container.innerHTML = '<div class="py-8 text-center text-xs text-slate-500">Belum ada data bulanan.</div>';
+        container.innerHTML = '<div class="py-12 text-center text-xs font-bold app-muted-text">Belum ada transaksi pada periode bulanan.</div>';
         return;
       }
 
@@ -902,51 +1659,60 @@
         const profit = group.income - group.outcome;
 
         return `
-          <div class="rounded-3xl bg-white/5 border border-white/10 p-5 space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+          <div class="glass-sub-card p-5 space-y-4 shadow-sm">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-pink-400/20">
               <div>
-                <h3 class="font-bold text-base text-white">${group.title}</h3>
-                <span class="text-xs text-slate-400">${group.items.length} Transaksi Tercatat</span>
+                <h3 class="font-black text-base app-title-text">${group.title}</h3>
+                <span class="text-xs app-muted-text font-bold">${group.items.length} Transaksi Tercatat</span>
               </div>
               <div class="text-right">
-                <span class="text-[11px] text-slate-400 block font-semibold">Keuntungan Bersih:</span>
-                <span class="font-black text-sm sm:text-base ${profit >= 0 ? 'text-emerald-400' : 'text-rose-400'}">
+                <span class="text-[11px] app-muted-text block font-black">Keuntungan Bersih:</span>
+                <span class="font-black text-base ${profit >= 0 ? 'text-emerald-800 dark:text-emerald-300' : 'text-rose-800 dark:text-rose-300'}">
                   ${formatIDR(profit)}
                 </span>
               </div>
             </div>
 
-            <!-- Mini Summary 3 Kolom -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
-              <div class="bg-black/30 p-2.5 rounded-xl border border-white/5">
-                <span class="text-slate-400 block">Pemasukan:</span>
-                <span class="font-bold text-emerald-400">${formatIDR(group.income)}</span>
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 text-xs">
+              <div class="p-2.5 rounded-xl border border-emerald-400/50 bg-emerald-500/15 dark:bg-emerald-950/60 dark:border-emerald-500/50">
+                <span class="text-emerald-900 dark:text-emerald-300 block text-[10px] font-black">Pemasukan</span>
+                <span class="font-black text-emerald-950 dark:text-emerald-200 text-xs sm:text-sm">${formatIDR(group.income)}</span>
               </div>
-              <div class="bg-black/30 p-2.5 rounded-xl border border-white/5">
-                <span class="text-slate-400 block">Pengeluaran:</span>
-                <span class="font-bold text-rose-400">${formatIDR(group.outcome)}</span>
+              <div class="p-2.5 rounded-xl border border-rose-400/50 bg-rose-500/15 dark:bg-rose-950/60 dark:border-rose-500/50">
+                <span class="text-rose-900 dark:text-rose-300 block text-[10px] font-black">Pengeluaran</span>
+                <span class="font-black text-rose-950 dark:text-rose-200 text-xs sm:text-sm">${formatIDR(group.outcome)}</span>
               </div>
-              <div class="bg-black/30 p-2.5 rounded-xl border border-white/5">
-                <span class="text-slate-400 block">Suntik Modal:</span>
-                <span class="font-bold text-sky-400">${formatIDR(group.ownerInject)}</span>
+              <div class="p-2.5 rounded-xl border border-amber-400/50 bg-amber-500/20 dark:bg-amber-950/60 dark:border-amber-500/50">
+                <span class="text-amber-900 dark:text-amber-300 block text-[10px] font-black">Pajak 12% Belanja</span>
+                <span class="font-black text-amber-950 dark:text-amber-200 text-xs sm:text-sm">${formatIDR(group.taxAmount)}</span>
               </div>
-              <div class="bg-black/30 p-2.5 rounded-xl border border-white/5">
-                <span class="text-slate-400 block">Kembalian Modal:</span>
-                <span class="font-bold text-amber-400">${formatIDR(group.ownerRepay)}</span>
+              <div class="p-2.5 rounded-xl border border-pink-400/50 bg-pink-500/15 dark:bg-pink-950/60 dark:border-pink-500/50">
+                <span class="text-pink-900 dark:text-pink-300 block text-[10px] font-black">Suntik Modal</span>
+                <span class="font-black text-pink-950 dark:text-pink-200 text-xs sm:text-sm">${formatIDR(group.ownerInject)}</span>
+              </div>
+              <div class="p-2.5 rounded-xl border border-amber-400/50 bg-amber-500/15 dark:bg-amber-950/60 dark:border-amber-500/50">
+                <span class="text-amber-900 dark:text-amber-300 block text-[10px] font-black">Kembalian Modal</span>
+                <span class="font-black text-amber-950 dark:text-amber-200 text-xs sm:text-sm">${formatIDR(group.ownerRepay)}</span>
               </div>
             </div>
 
-            <!-- Daftar Transaksi Bulan Ini -->
             <div class="space-y-2 pt-2">
               ${group.items.map(it => `
-                <div class="flex items-center justify-between text-xs py-1.5 border-b border-white/5 last:border-0">
+                <div class="flex items-center justify-between text-xs py-1.5 border-b border-slate-200 dark:border-pink-400/10 last:border-0">
                   <div class="min-w-0 pr-2">
-                    <span class="font-semibold text-slate-200 block truncate">${escapeHTML(it.title)}</span>
-                    <span class="text-[10px] text-slate-400">${it.date} • ${escapeHTML(it.category)}</span>
+                    <span class="font-black app-title-text block truncate">${escapeHTML(it.title)}</span>
+                    <span class="text-[10px] app-muted-text font-bold">${it.date} • ${escapeHTML(it.category)}</span>
                   </div>
-                  <span class="font-bold shrink-0 ${it.type === 'OUTCOME' || it.type === 'OWNER_REPAY' ? 'text-rose-400' : 'text-emerald-400'}">
-                    ${it.type === 'OUTCOME' || it.type === 'OWNER_REPAY' ? '-' : '+'} ${formatIDR(it.amount)}
-                  </span>
+                  <div class="flex items-center gap-2">
+                    <span class="font-black shrink-0 ${it.type === 'OUTCOME' || it.type === 'OWNER_REPAY' ? 'text-rose-800 dark:text-rose-300' : 'text-emerald-800 dark:text-emerald-300'}">
+                      ${it.type === 'OUTCOME' || it.type === 'OWNER_REPAY' ? '-' : '+'} ${formatIDR(it.amount)}
+                    </span>
+                    ${isOwner ? `
+                      <button onclick="openEditModal('${it.id}')" class="text-pink-700 dark:text-pink-300 hover:opacity-80 p-1" title="Edit">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                      </button>
+                    ` : ''}
+                  </div>
                 </div>
               `).join('')}
             </div>
@@ -955,7 +1721,7 @@
       }).join('');
     }
 
-    // Render Grafik Tren Arus Kas
+    // Render Grafik
     function renderChart() {
       const ctx = document.getElementById('canvasCashflow');
       if (!ctx) return;
@@ -974,10 +1740,14 @@
       });
 
       const labels = Array.from(new Set([...Object.keys(monthlyIncome), ...Object.keys(monthlyOutcome)]));
-      if (labels.length === 0) labels.push('Okt 26', 'Nov 26');
+      if (labels.length === 0) labels.push('Bulan Berjalan');
 
       const dataInc = labels.map(l => monthlyIncome[l] || 0);
       const dataOut = labels.map(l => monthlyOutcome[l] || 0);
+
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const labelColor = isDark ? '#fbcfe8' : '#0f172a';
+      const gridColor = isDark ? 'rgba(244, 114, 182, 0.15)' : 'rgba(244, 114, 182, 0.25)';
 
       if (cashflowChart) cashflowChart.destroy();
 
@@ -989,13 +1759,13 @@
             {
               label: 'Pemasukan',
               data: dataInc,
-              backgroundColor: 'rgba(16, 185, 129, 0.85)',
+              backgroundColor: 'rgba(5, 150, 105, 0.9)',
               borderRadius: 10
             },
             {
               label: 'Pengeluaran',
               data: dataOut,
-              backgroundColor: 'rgba(244, 63, 94, 0.85)',
+              backgroundColor: 'rgba(225, 29, 72, 0.9)',
               borderRadius: 10
             }
           ]
@@ -1005,24 +1775,104 @@
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans', weight: '600' } }
+              labels: { color: labelColor, font: { family: 'Plus Jakarta Sans', weight: '800' } }
             }
           },
           scales: {
             x: {
-              ticks: { color: '#94a3b8' },
-              grid: { color: 'rgba(255,255,255,0.05)' }
+              ticks: { color: labelColor, font: { weight: '700' } },
+              grid: { color: gridColor }
             },
             y: {
-              ticks: { color: '#94a3b8' },
-              grid: { color: 'rgba(255,255,255,0.05)' }
+              ticks: { color: labelColor, font: { weight: '700' } },
+              grid: { color: gridColor }
             }
           }
         }
       });
     }
 
-    // Form Handling
+    // Role Owner vs Viewer (Sembunyikan teks/ikon peninjau)
+    function updateRoleUI() {
+      const dockRecord = document.getElementById('dockRecord');
+      const btnLogout = document.getElementById('btnLogoutOwner');
+      const btnQuickRecord = document.getElementById('btnQuickRecord');
+
+      if (isOwner) {
+        dockRecord.classList.remove('hidden');
+        btnLogout.classList.remove('hidden');
+        if (btnQuickRecord) btnQuickRecord.classList.remove('hidden');
+      } else {
+        dockRecord.classList.add('hidden');
+        btnLogout.classList.add('hidden');
+        if (btnQuickRecord) btnQuickRecord.classList.add('hidden');
+
+        const viewRecord = document.getElementById('viewRecord');
+        if (!viewRecord.classList.contains('hidden')) {
+          switchTab('tabDashboard');
+        }
+      }
+      renderRecentTransactions();
+      renderMonthlyReport();
+      updateYouTubeOwnerButtons();
+    }
+
+    // Secret Tap Trigger (7 kali tap pada logo by neilverse /)
+    document.getElementById('btnSecretOwner').addEventListener('click', () => {
+      secretTapCount++;
+      clearTimeout(secretTapTimer);
+      secretTapTimer = setTimeout(() => {
+        secretTapCount = 0;
+      }, 2500);
+
+      if (secretTapCount >= 7) {
+        secretTapCount = 0;
+        openOwnerModal();
+      }
+    });
+
+    function openOwnerModal() {
+      if (isOwner) {
+        alert('Anda saat ini sudah berada dalam Mode Owner (Akses Penuh).');
+        return;
+      }
+      const modal = document.getElementById('modalOwnerLogin');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('inputOwnerPin').value = '';
+      document.getElementById('inputOwnerPin').focus();
+    }
+
+    function closeOwnerModal() {
+      const modal = document.getElementById('modalOwnerLogin');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleOwnerLogin(e) {
+      e.preventDefault();
+      const pin = document.getElementById('inputOwnerPin').value.trim();
+      if (pin === OWNER_PIN) {
+        isOwner = true;
+        localStorage.setItem(ROLE_KEY, 'OWNER');
+        updateRoleUI();
+        closeOwnerModal();
+        alert('Akses Owner Diberikan! Anda dapat mencatat, mengedit, dan menghapus transaksi.');
+      } else {
+        alert('PIN salah. Akses ditolak.');
+      }
+    }
+
+    function logoutOwner() {
+      if (confirm('Kunci kembali Mode Owner?')) {
+        isOwner = false;
+        localStorage.removeItem(ROLE_KEY);
+        updateRoleUI();
+        switchTab('tabDashboard');
+      }
+    }
+
+    // Form Handling Catat Baru
     function setFormCategoryType(type) {
       currentFormType = type;
       const btnInc = document.getElementById('btnTypeInc');
@@ -1030,27 +1880,50 @@
       const btnInj = document.getElementById('btnTypeOwnerInject');
       const btnRep = document.getElementById('btnTypeOwnerRepay');
 
-      // Reset styles
-      const activeClass = 'py-3 px-3 rounded-2xl border text-xs font-bold transition flex items-center justify-center gap-1.5';
-      const defaultClass = 'py-3 px-3 rounded-2xl border text-xs font-bold transition flex items-center justify-center gap-1.5 bg-white/5 border-white/10 text-slate-400';
+      const activeClass = 'py-3 px-3 rounded-2xl border text-xs font-black transition flex items-center justify-center gap-1.5';
+      const defaultClass = 'py-3 px-3 rounded-2xl border text-xs font-bold transition flex items-center justify-center gap-1.5 bg-white/70 dark:bg-black/25 border-pink-400/30 app-muted-text';
 
-      btnInc.className = type === 'INCOME' ? activeClass + ' bg-emerald-500/20 border-emerald-500 text-emerald-300' : defaultClass;
-      btnOut.className = type === 'OUTCOME' ? activeClass + ' bg-rose-500/20 border-rose-500 text-rose-300' : defaultClass;
-      btnInj.className = type === 'OWNER_INJECT' ? 'py-2 px-2.5 rounded-xl border text-[11px] font-bold transition bg-sky-500/20 border-sky-500 text-sky-300' : 'py-2 px-2.5 rounded-xl border text-[11px] font-bold transition bg-white/5 border-white/10 text-slate-400';
-      btnRep.className = type === 'OWNER_REPAY' ? 'py-2 px-2.5 rounded-xl border text-[11px] font-bold transition bg-amber-500/20 border-amber-500 text-amber-300' : 'py-2 px-2.5 rounded-xl border text-[11px] font-bold transition bg-white/5 border-white/10 text-slate-400';
+      btnInc.className = type === 'INCOME' ? activeClass + ' bg-emerald-500/20 border-emerald-500 text-emerald-800 dark:text-emerald-300' : defaultClass;
+      btnOut.className = type === 'OUTCOME' ? activeClass + ' bg-rose-500/20 border-rose-500 text-rose-800 dark:text-rose-300' : defaultClass;
+      btnInj.className = type === 'OWNER_INJECT' ? 'py-2 px-2.5 rounded-xl border text-[11px] font-black transition bg-pink-500/25 border-pink-500 text-pink-800 dark:text-pink-200' : defaultClass;
+      btnRep.className = type === 'OWNER_REPAY' ? 'py-2 px-2.5 rounded-xl border text-[11px] font-black transition bg-amber-500/25 border-amber-500 text-amber-800 dark:text-amber-200' : defaultClass;
 
-      populateCategoryOptions(type);
+      populateCategoryOptions(type, 'txCategory');
+      onCategorySelectChange();
     }
 
-    function populateCategoryOptions(type) {
-      const select = document.getElementById('txCategory');
+    function populateCategoryOptions(type, elementId) {
+      const select = document.getElementById(elementId);
       const cats = CATEGORIES[type] || [];
       select.innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
     }
 
-    // Submit Transaksi Baru
+    function onCategorySelectChange() {
+      const taxBadge = document.getElementById('taxNoticeBadge');
+      const taxPreview = document.getElementById('taxPreviewText');
+      const amtInput = Number(document.getElementById('txAmount').value || 0);
+
+      if (currentFormType === 'OUTCOME') {
+        taxBadge.classList.remove('hidden');
+        if (amtInput > 0) {
+          taxPreview.classList.remove('hidden');
+          taxPreview.textContent = `Pajak 12% untuk Negara: ${formatIDR(amtInput * 0.12)}`;
+        } else {
+          taxPreview.classList.add('hidden');
+        }
+      } else {
+        taxBadge.classList.add('hidden');
+        taxPreview.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('txAmount').addEventListener('input', onCategorySelectChange);
+
+    // Submit Catat Transaksi Baru (Validasi Tanggal Lokal)
     document.getElementById('formTransaction').addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!isOwner) return alert('Hanya Owner yang memiliki izin mencatat transaksi.');
+
       const desc = document.getElementById('txDescription').value.trim();
       const amount = Number(document.getElementById('txAmount').value);
       const category = document.getElementById('txCategory').value;
@@ -1059,10 +1932,9 @@
 
       if (!desc || !amount || amount <= 0 || !date) return;
 
-      // Validasi Batas Tanggal (Tidak Boleh Hari Esok)
-      const todayStr = new Date().toISOString().split('T')[0];
-      if (date > todayStr) {
-        alert('Kesalahan: Anda tidak dapat mencatat transaksi untuk tanggal di masa depan (hari esok).');
+      const todayLocal = getLocalDateString(new Date());
+      if (date > todayLocal) {
+        alert('Kesalahan: Tanggal transaksi tidak boleh melebihi hari ini (' + todayLocal + ').');
         return;
       }
 
@@ -1081,7 +1953,6 @@
       saveLocalCache();
       refreshAllUI();
 
-      // Sinkronkan ke Firebase
       if (rtdbCashflowRef) {
         try {
           await rtdbCashflowRef.child(newTx.id).set(newTx);
@@ -1091,31 +1962,131 @@
         }
       }
 
-      alert('Transaksi berhasil dicatat ke dalam buku kas!');
+      alert('Transaksi berhasil disimpan ke kas Neilverse!');
       document.getElementById('formTransaction').reset();
-      document.getElementById('txDate').value = todayStr;
+      document.getElementById('txDate').value = todayLocal;
       setFormCategoryType('INCOME');
       switchTab('tabDashboard');
     });
 
-    // Render Catatan Rilis (Maksimal 10)
+    // Fitur Hapus Transaksi (Owner)
+    window.deleteTransaction = async function(id) {
+      if (!isOwner) return alert('Hanya Owner yang memiliki hak untuk menghapus transaksi.');
+      const tx = transactions.find(t => t.id === id);
+      if (!tx) return;
+
+      if (confirm(`Yakin ingin menghapus transaksi "${tx.title}" senilai ${formatIDR(tx.amount)}?`)) {
+        transactions = transactions.filter(t => t.id !== id);
+        saveLocalCache();
+        refreshAllUI();
+
+        if (rtdbCashflowRef) {
+          try {
+            await rtdbCashflowRef.child(id).remove();
+            updateCloudBadge(true);
+          } catch (e) {
+            console.warn('Gagal hapus dari Firebase:', e);
+          }
+        }
+      }
+    };
+
+    // Fitur Edit Transaksi (Owner)
+    window.openEditModal = function(id) {
+      if (!isOwner) return alert('Hanya Owner yang dapat mengedit data transaksi.');
+      const tx = transactions.find(t => t.id === id);
+      if (!tx) return;
+
+      document.getElementById('editTxId').value = tx.id;
+      document.getElementById('editTxType').value = tx.type;
+      populateCategoryOptions(tx.type, 'editTxCategory');
+      document.getElementById('editTxCategory').value = tx.category;
+      document.getElementById('editTxDescription').value = tx.title;
+      document.getElementById('editTxAmount').value = tx.amount;
+      document.getElementById('editTxDate').value = tx.date;
+      document.getElementById('editTxNotes').value = tx.notes || '';
+
+      const modal = document.getElementById('modalEdit');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+
+    function onEditTypeChange() {
+      const type = document.getElementById('editTxType').value;
+      populateCategoryOptions(type, 'editTxCategory');
+    }
+
+    function closeEditModal() {
+      const modal = document.getElementById('modalEdit');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    document.getElementById('formEditTransaction').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!isOwner) return;
+
+      const id = document.getElementById('editTxId').value;
+      const type = document.getElementById('editTxType').value;
+      const category = document.getElementById('editTxCategory').value;
+      const title = document.getElementById('editTxDescription').value.trim();
+      const amount = Number(document.getElementById('editTxAmount').value);
+      const date = document.getElementById('editTxDate').value;
+      const notes = document.getElementById('editTxNotes').value.trim();
+
+      const todayLocal = getLocalDateString(new Date());
+      if (date > todayLocal) {
+        alert('Kesalahan: Tanggal transaksi tidak boleh melebihi hari ini (' + todayLocal + ').');
+        return;
+      }
+
+      const idx = transactions.findIndex(t => t.id === id);
+      if (idx !== -1) {
+        transactions[idx] = {
+          ...transactions[idx],
+          type,
+          category,
+          title,
+          amount,
+          date,
+          notes
+        };
+
+        saveLocalCache();
+        refreshAllUI();
+
+        if (rtdbCashflowRef) {
+          try {
+            await rtdbCashflowRef.child(id).set(transactions[idx]);
+            updateCloudBadge(true);
+          } catch (err) {
+            console.warn('Gagal update Firebase:', err);
+          }
+        }
+
+        closeEditModal();
+        alert('Perubahan transaksi berhasil disimpan!');
+      }
+    });
+
+    // Render Catatan Rilis
     function renderChangelogs() {
       const container = document.getElementById('changelogListContainer');
       const maxTen = CHANGELOGS.slice(0, 10);
 
       container.innerHTML = maxTen.map(ch => `
-        <div class="p-5 rounded-3xl bg-white/5 border border-white/10 space-y-3">
-          <div class="flex items-center justify-between pb-2 border-b border-white/10">
+        <div class="glass-sub-card p-5 space-y-3 shadow-sm">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-pink-400/20">
             <div class="flex items-center gap-2.5">
-              <span class="brand-font text-lg font-bold text-sky-400">${ch.version}</span>
-              <span class="font-bold text-sm text-white">${ch.title}</span>
+              <span class="brand-font text-lg font-black app-pink-text">${ch.version}</span>
+              <span class="font-black text-sm app-title-text">${ch.title}</span>
             </div>
-            <span class="text-xs text-slate-400">${ch.date}</span>
+            <span class="text-xs app-muted-text font-bold">${ch.date}</span>
           </div>
-          <ul class="space-y-1.5 text-xs text-slate-300">
+          <ul class="space-y-1.5 text-xs app-body-text font-semibold">
             ${ch.items.map(it => `
               <li class="flex items-start gap-2">
-                <span class="text-sky-400 font-bold shrink-0">•</span>
+                <span class="app-pink-text font-black shrink-0">•</span>
                 <span>${it}</span>
               </li>
             `).join('')}
@@ -1124,12 +2095,18 @@
       `).join('');
     }
 
-    // Tab Navigation Controller
+    // Switch Tab Navigation
     function switchTab(tabId) {
+      if (tabId === 'tabRecord' && !isOwner) {
+        alert('Menu Catat hanya dapat diakses dalam Mode Owner.');
+        return;
+      }
+
       const views = {
         tabDashboard: 'viewDashboard',
         tabMonthly: 'viewMonthly',
         tabRecord: 'viewRecord',
+        tabYouTube: 'viewYouTube',
         tabMarket: 'viewMarket',
         tabChangelog: 'viewChangelog'
       };
@@ -1138,6 +2115,7 @@
         tabDashboard: 'dockDashboard',
         tabMonthly: 'dockMonthly',
         tabRecord: 'dockRecord',
+        tabYouTube: 'dockYouTube',
         tabMarket: 'dockMarket',
         tabChangelog: 'dockChangelog'
       };
@@ -1169,17 +2147,17 @@
     document.getElementById('calcAmount').addEventListener('input', updateConverter);
     document.getElementById('calcCurrency').addEventListener('change', updateConverter);
 
-    // Refresh Market Data Simulator
     function refreshMarketData() {
       const now = new Date();
-      document.getElementById('marketTimestampText').textContent = `Data live diperbarui per ${now.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})} ${now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}`;
+      document.getElementById('marketTimestampText').textContent = `Data diperbarui ${now.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'})} ${now.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})}`;
       updateConverter();
-      alert('Data pasar uang dan emas Antam telah disegarkan.');
+      initYouTubeData();
+      alert('Data kurs dan harga emas Antam terkini telah disegarkan.');
     }
 
     // Ekspor CSV
     function exportMonthlyReport() {
-      if (transactions.length === 0) return alert('Tidak ada data transaksi.');
+      if (transactions.length === 0) return alert('Tidak ada data transaksi untuk diekspor.');
       const headers = ['ID', 'Tanggal', 'Jenis', 'Kategori', 'Keterangan', 'Nominal', 'Catatan'];
       const rows = transactions.map(t => [
         t.id,
@@ -1195,7 +2173,7 @@
       const encodedUri = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `NeilBook_Cashflow_Laporan_${new Date().toISOString().slice(0,10)}.csv`);
+      link.setAttribute("download", `NeilBook_Cashflow_Neilverse_${new Date().toISOString().slice(0,10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1207,20 +2185,581 @@
       }[m]));
     }
 
+    // PULL TO REFRESH INTERACTION
+    let touchStartY = 0;
+    let touchCurrentY = 0;
+    let isPulling = false;
+
+    window.addEventListener('touchstart', (e) => {
+      if (window.scrollY === 0) {
+        touchStartY = e.touches[0].clientY;
+        isPulling = true;
+      } else {
+        isPulling = false;
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isPulling) return;
+      touchCurrentY = e.touches[0].clientY;
+      const pullDistance = touchCurrentY - touchStartY;
+
+      if (pullDistance > 0 && window.scrollY === 0) {
+        const ptr = document.getElementById('pullToRefresh');
+        const moveY = Math.min(pullDistance * 0.45, 60);
+        ptr.style.top = `${moveY}px`;
+        ptr.style.opacity = Math.min(pullDistance / 80, 1);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      if (!isPulling) return;
+      const pullDistance = touchCurrentY - touchStartY;
+      const ptr = document.getElementById('pullToRefresh');
+
+      if (pullDistance > 90 && window.scrollY === 0) {
+        document.getElementById('ptrText').textContent = 'Memperbarui Kas Neilverse...';
+        setTimeout(() => {
+          refreshAllUI();
+          updateConverter();
+      initYouTubeData();
+          updateLiveClock();
+          ptr.style.top = '-60px';
+          ptr.style.opacity = '0';
+          setTimeout(() => {
+            document.getElementById('ptrText').textContent = 'Memperbarui Kas Neilverse...';
+          }, 300);
+        }, 800);
+      } else {
+        ptr.style.top = '-60px';
+        ptr.style.opacity = '0';
+      }
+      isPulling = false;
+    });
+
+
+    // DATA YOUTUBE CREATOR NEILVERSE (4 SUB-HALAMAN, SHOW/HIDE, REALTIME STATS)
+    const YT_STORAGE_VIDEOS = 'neilverse_yt_videos_v109';
+    const YT_STORAGE_STATS = 'neilverse_yt_stats_v109';
+    const NEILVERSE_CHANNEL_ID = 'UCJz9YP6IFyrIeyhF7N3XCbg';
+
+    let ytChannelStats = {
+      subscribers: 0,
+      views365: 0,
+      watchHours: 0, // Input mandiri owner
+      apiKey: "AIzaSyCZVV2UWawbiToyhZi7Sc9wj5HgCQ1va2E" // YouTube Data API v3 Resmi
+    };
+
+    let ytVideos = [];
+    let currentYtSubTab = 'mv'; // 'mv' | 'album' | 'shorts' | 'all_owner'
+
+    // Helper Ekstrak ID Video YouTube dari Tautan Apapun (Termasuk Shorts)
+    function extractYouTubeID(url) {
+      if (!url) return '';
+      const clean = url.trim();
+      const match = clean.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/);
+      return match ? match[1] : (clean.length === 11 ? clean : '');
+    }
+
+    // Helper Konversi Format Durasi ISO 8601 (PT4M20S -> 04:20)
+    function parseDurationISO(duration) {
+      if (!duration) return 'HD';
+      const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+      if (!match) return duration;
+      const hours = parseInt(match[1] || 0, 10);
+      const minutes = parseInt(match[2] || 0, 10);
+      const seconds = parseInt(match[3] || 0, 10);
+      if (hours > 0) {
+        return `${hours}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+      }
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    // Inisialisasi Data YouTube dari Local & Fetch Live API
+    function initYouTubeData() {
+      try {
+        const cachedStats = localStorage.getItem(YT_STORAGE_STATS);
+        if (cachedStats) {
+          const parsed = JSON.parse(cachedStats);
+          ytChannelStats = { ...ytChannelStats, ...parsed };
+          if (!ytChannelStats.apiKey) ytChannelStats.apiKey = "AIzaSyCZVV2UWawbiToyhZi7Sc9wj5HgCQ1va2E";
+        }
+
+        const cachedVideos = localStorage.getItem(YT_STORAGE_VIDEOS);
+        if (cachedVideos) {
+          ytVideos = JSON.parse(cachedVideos);
+        }
+      } catch (e) {
+        console.warn('Gagal memuat YouTube cache:', e);
+      }
+
+      renderYouTubeStats();
+      renderYouTubeFeed();
+      initYouTubeFirebaseSync();
+
+      // Panggil fetch otomatis ke YouTube Data API v3 (Live)
+      fetchLiveYouTubeData();
+    }
+
+    function initYouTubeFirebaseSync() {
+      if (!firebaseDb) return;
+      try {
+        const ytRef = firebaseDb.ref('youtube_studio');
+        ytRef.on('value', snapshot => {
+          const val = snapshot.val();
+          if (val) {
+            if (val.stats) ytChannelStats = { ...ytChannelStats, ...val.stats };
+            if (val.videos) ytVideos = Object.values(val.videos);
+            saveYouTubeStatsLocal();
+            saveYouTubeVideosLocal();
+            renderYouTubeStats();
+            renderYouTubeFeed();
+          }
+        });
+      } catch (e) {
+        console.warn('Firebase YouTube Sync error:', e);
+      }
+    }
+
+    function saveYouTubeStatsLocal() {
+      try { localStorage.setItem(YT_STORAGE_STATS, JSON.stringify(ytChannelStats)); } catch (_) {}
+    }
+
+    function saveYouTubeVideosLocal() {
+      try { localStorage.setItem(YT_STORAGE_VIDEOS, JSON.stringify(ytVideos)); } catch (_) {}
+    }
+
+    // Pindah Sub-Kategori Tab Video (Official Music Video, Official Full Album, Shorts, Semua Video Owner)
+    function setYtSubCategoryTab(tab) {
+      if (tab === 'all_owner' && !isOwner) {
+        alert('Halaman "Semua Video" hanya dapat diakses dalam Mode Owner.');
+        return;
+      }
+      currentYtSubTab = tab;
+
+      const tabs = [
+        { id: 'ySubTabMV', key: 'mv' },
+        { id: 'ySubTabAlbum', key: 'album' },
+        { id: 'ySubTabShorts', key: 'shorts' },
+        { id: 'ySubTabAllOwner', key: 'all_owner' }
+      ];
+
+      tabs.forEach(t => {
+        const el = document.getElementById(t.id);
+        if (!el) return;
+        if (t.key === currentYtSubTab) {
+          if (t.key === 'all_owner') {
+            el.className = 'px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-amber-500 bg-amber-500 text-slate-900 shadow-md';
+          } else {
+            el.className = 'px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition shadow-md bg-gradient-to-r from-pink-600 to-rose-600 text-white';
+          }
+        } else {
+          if (t.key === 'all_owner') {
+            el.className = 'px-3.5 py-1.5 rounded-xl text-xs font-black transition border border-amber-500/50 bg-amber-500/15 text-amber-800 dark:text-amber-200 hover:bg-amber-500/25';
+          } else {
+            el.className = 'px-3.5 py-1.5 rounded-xl text-xs font-bold transition text-slate-700 dark:text-slate-200 hover:text-pink-600';
+          }
+        }
+      });
+
+      renderYouTubeFeed();
+    }
+
+    // Render 3 Kartu Statistik (Subscribers Live, Total Views Termasuk Video Hide, Jam Tayang Manual)
+    function renderYouTubeStats() {
+      const subEl = document.getElementById('ytSubscribersCount');
+      const viewsEl = document.getElementById('ytTotalViewsCount');
+      const watchEl = document.getElementById('ytWatchHoursCount');
+      const barEl = document.getElementById('ytWatchProgressBar');
+      const percentEl = document.getElementById('ytWatchPercentText');
+      const remainEl = document.getElementById('ytWatchRemainText');
+
+      const subs = Number(ytChannelStats.subscribers || 0);
+
+      // Total penayangan dari SEMUA video yang terdaftar (TERMASUK YANG DI-HIDE)
+      const allVideosSumViews = ytVideos.reduce((acc, v) => acc + Number(v.views || 0), 0);
+      const channelBaseViews = Number(ytChannelStats.views365 || 0);
+      const grandTotalViews = Math.max(channelBaseViews, allVideosSumViews);
+
+      const hours = Number(ytChannelStats.watchHours || 0);
+
+      if (subEl) subEl.textContent = subs.toLocaleString('id-ID');
+      if (viewsEl) viewsEl.textContent = grandTotalViews.toLocaleString('id-ID');
+      if (watchEl) watchEl.textContent = Math.round(hours).toLocaleString('id-ID');
+
+      const target = 4000;
+      const pct = Math.min(100, Math.max(0, (hours / target) * 100));
+      const remain = Math.max(0, target - hours);
+
+      if (barEl) barEl.style.width = `${pct.toFixed(1)}%`;
+      if (percentEl) percentEl.textContent = `Progres: ${pct.toFixed(1)}%`;
+      if (remainEl) remainEl.textContent = `Sisa ${Math.round(remain).toLocaleString('id-ID')} Jam`;
+    }
+
+    // Toggle Status Show / Hide Video (Hanya Owner)
+    window.toggleYouTubeVideoVisibility = function(uid, event) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      if (!isOwner) return alert('Hanya Owner yang dapat mengubah status tampil/hide video.');
+
+      const target = ytVideos.find(v => (v.uid || v.id) === uid);
+      if (!target) return;
+
+      target.isHidden = !target.isHidden;
+      saveYouTubeVideosLocal();
+      renderYouTubeFeed();
+      renderYouTubeStats(); // Update penayangan
+
+      if (firebaseDb) {
+        firebaseDb.ref('youtube_studio/videos').set(ytVideos).catch(err => console.warn('Sync visibility error:', err));
+      }
+    };
+
+    // Render Koleksi Video Berdasarkan Halaman yang Aktif
+    function renderYouTubeFeed() {
+      const container = document.getElementById('ytVideoFeedList');
+      const countBadge = document.getElementById('ytVideoCountBadge');
+      if (!container) return;
+
+      // Filter video berdasarkan halaman aktif
+      let filtered = [];
+      if (currentYtSubTab === 'mv') {
+        filtered = ytVideos.filter(v => (v.category === 'Official Music Video' || v.category === 'Official Video Clip' || !v.category) && !v.isHidden);
+      } else if (currentYtSubTab === 'album') {
+        filtered = ytVideos.filter(v => v.category === 'Official Full Album' && !v.isHidden);
+      } else if (currentYtSubTab === 'shorts') {
+        filtered = ytVideos.filter(v => v.category === 'Shorts' && !v.isHidden);
+      } else if (currentYtSubTab === 'all_owner') {
+        // Tampilkan SEMUA video termasuk yang di-hide
+        filtered = [...ytVideos];
+      }
+
+      if (countBadge) {
+        countBadge.textContent = `${filtered.length} Video Ditampilkan`;
+      }
+
+      if (filtered.length === 0) {
+        let emptyMsg = 'Belum ada video pada kategori ini.';
+        if (currentYtSubTab === 'mv') emptyMsg = 'Belum ada "Official Music Video" yang ditampilkan.';
+        else if (currentYtSubTab === 'album') emptyMsg = 'Belum ada "Official Full Album" yang ditampilkan.';
+        else if (currentYtSubTab === 'shorts') emptyMsg = 'Belum ada konten "Shorts" yang ditampilkan.';
+        else if (currentYtSubTab === 'all_owner') emptyMsg = 'Belum ada video yang terdaftar di koleksi Neilverse.';
+
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center text-xs font-bold app-muted-text">
+            ${emptyMsg}
+            ${isOwner ? '<br><span class="text-red-600 dark:text-red-400 font-black mt-1 inline-block">Gunakan tombol "+ Tambah Video (By Link)" untuk menambahkan video ke halaman ini.</span>' : ''}
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(v => {
+        const thumb = `https://img.youtube.com/vi/${v.id}/hqdefault.jpg`;
+        const categoryBadge = v.category || 'Official Music Video';
+        const isHidden = !!v.isHidden;
+
+        return `
+          <div class="glass-sub-card overflow-hidden border shadow-sm group hover:border-red-500/50 transition relative flex flex-col justify-between ${isHidden ? 'opacity-85 border-dashed border-amber-500/50' : ''}">
+            <!-- Thumbnail dengan Tombol Play -->
+            <div onclick="playYouTubeVideo('${v.id}', '${escapeHTML(v.title)}', '${categoryBadge} • ${Number(v.views || 0).toLocaleString('id-ID')} views')" class="relative aspect-video w-full overflow-hidden bg-black/40 cursor-pointer">
+              <img src="${thumb}" alt="${escapeHTML(v.title)}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80'">
+              <div class="absolute inset-0 bg-black/25 flex items-center justify-center group-hover:bg-black/10 transition">
+                <div class="w-11 h-11 rounded-full bg-red-600/95 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition">
+                  <svg class="w-5 h-5 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                </div>
+              </div>
+              <span class="absolute top-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-black bg-black/75 text-amber-300 border border-white/20">${categoryBadge}</span>
+              ${isHidden ? `<span class="absolute top-2 right-2 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-600 text-white border border-amber-300 shadow">🚫 Dihide</span>` : ''}
+              ${v.duration ? `<span class="absolute bottom-2 right-2 px-1.5 py-0.5 rounded text-[10px] font-bold bg-black/85 text-white">${escapeHTML(v.duration)}</span>` : ''}
+            </div>
+
+            <!-- Detail Video -->
+            <div class="p-3.5 flex flex-col justify-between flex-grow">
+              <div>
+                <h4 onclick="playYouTubeVideo('${v.id}', '${escapeHTML(v.title)}', '${categoryBadge}')" class="font-black text-xs app-title-text line-clamp-2 leading-snug cursor-pointer group-hover:text-red-600 transition">
+                  ${escapeHTML(v.title)}
+                </h4>
+              </div>
+
+              <div class="mt-3 pt-2.5 border-t border-pink-400/10 space-y-2">
+                <div class="flex items-center justify-between text-[11px] font-bold">
+                  <span class="text-red-600 dark:text-red-400 font-black">${Number(v.views || 0).toLocaleString('id-ID')} views</span>
+                  <span class="app-muted-text">${v.publishedAt || 'Neilverse'}</span>
+                </div>
+
+                <!-- Kontrol Owner (Toggle Show/Hide & Hapus) -->
+                ${isOwner ? `
+                  <div class="flex items-center justify-between pt-1 border-t border-slate-200 dark:border-pink-400/10">
+                    <!-- Toggle Show/Hide Button -->
+                    <button onclick="toggleYouTubeVideoVisibility('${v.uid || v.id}', event)" class="px-2.5 py-1 rounded-lg text-[10px] font-black border transition flex items-center gap-1 ${isHidden ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-500/25' : 'bg-amber-500/15 border-amber-500/40 text-amber-800 dark:text-amber-200 hover:bg-amber-500/25'}">
+                      ${isHidden ? '👁️ Tampilkan' : '🚫 Sembunyikan'}
+                    </button>
+
+                    <!-- Delete Button -->
+                    <button onclick="deleteYouTubeVideo('${v.uid || v.id}', event)" class="p-1 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 transition" title="Hapus Video">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Modal Add Video
+    function openYtAddVideoModal() {
+      if (!isOwner) return alert('Hanya Owner yang dapat menambahkan video.');
+      document.getElementById('formAddYouTubeVideo').reset();
+      const modal = document.getElementById('modalAddYouTubeVideo');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeYtAddVideoModal() {
+      const modal = document.getElementById('modalAddYouTubeVideo');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleSaveYouTubeVideo(e) {
+      e.preventDefault();
+      if (!isOwner) return;
+
+      const url = document.getElementById('inputYtUrl').value.trim();
+      const title = document.getElementById('inputYtTitle').value.trim();
+      const category = document.getElementById('selectYtCategory').value;
+      const visibility = document.getElementById('selectYtVisibility').value;
+      const isHidden = visibility === 'hidden';
+      const views = Number(document.getElementById('inputYtViews').value || Math.floor(Math.random() * 5000) + 1200);
+      const duration = document.getElementById('inputYtDuration').value.trim() || 'HD';
+
+      const videoId = extractYouTubeID(url);
+      if (!videoId) {
+        alert('Tautan YouTube tidak valid! Masukkan tautan seperti https://www.youtube.com/watch?v=... atau https://youtu.be/...');
+        return;
+      }
+
+      const newVideo = {
+        uid: 'yt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+        id: videoId,
+        title,
+        category,
+        isHidden,
+        views,
+        duration,
+        publishedAt: 'Baru Rilis',
+        timestamp: Date.now()
+      };
+
+      ytVideos.unshift(newVideo);
+      saveYouTubeVideosLocal();
+      renderYouTubeFeed();
+      renderYouTubeStats(); // Pastikan views bertambah
+
+      // Sinkronkan ke Firebase
+      if (firebaseDb) {
+        firebaseDb.ref('youtube_studio/videos').set(ytVideos).catch(err => console.warn('Sync video error:', err));
+      }
+
+      closeYtAddVideoModal();
+      alert('Video berhasil ditambahkan ke koleksi Neilverse!');
+    }
+
+    window.deleteYouTubeVideo = function(uid, event) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      if (!isOwner) return alert('Hanya Owner yang dapat menghapus video.');
+
+      const target = ytVideos.find(v => (v.uid || v.id) === uid);
+      const title = target ? target.title : 'video ini';
+
+      if (confirm(`Hapus "${title}" dari daftar koleksi?`)) {
+        ytVideos = ytVideos.filter(v => (v.uid || v.id) !== uid);
+        saveYouTubeVideosLocal();
+        renderYouTubeFeed();
+        renderYouTubeStats(); // Recalculate views
+
+        if (firebaseDb) {
+          firebaseDb.ref('youtube_studio/videos').set(ytVideos).catch(err => console.warn('Sync delete error:', err));
+        }
+      }
+    };
+
+    window.clearAllYouTubeVideos = function() {
+      if (!isOwner) return alert('Hanya Owner yang dapat menghapus video.');
+      if (ytVideos.length === 0) return alert('Daftar video sudah kosong.');
+
+      if (confirm(`Yakin ingin menghapus seluruh (${ytVideos.length}) video yang terdaftar?`)) {
+        ytVideos = [];
+        saveYouTubeVideosLocal();
+        renderYouTubeFeed();
+        renderYouTubeStats();
+
+        if (firebaseDb) {
+          firebaseDb.ref('youtube_studio/videos').set([]).catch(err => console.warn('Sync wipe error:', err));
+        }
+        alert('Seluruh video berhasil dibersihkan.');
+      }
+    };
+
+    // Modal Edit Stats (Khusus Jam Tayang & API Key)
+    function openYtStatsModal() {
+      if (!isOwner) return alert('Hanya Owner yang dapat mengubah statistik.');
+      document.getElementById('inputStatSubscribers').value = ytChannelStats.subscribers || '';
+      document.getElementById('inputStatViews365').value = ytChannelStats.views365 || '';
+      document.getElementById('inputStatWatchHours').value = ytChannelStats.watchHours || '';
+      document.getElementById('inputStatApiKey').value = ytChannelStats.apiKey || '';
+
+      const modal = document.getElementById('modalEditYtStats');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeYtStatsModal() {
+      const modal = document.getElementById('modalEditYtStats');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function handleSaveYtStats(e) {
+      e.preventDefault();
+      if (!isOwner) return;
+
+      ytChannelStats.subscribers = Number(document.getElementById('inputStatSubscribers').value || 0);
+      ytChannelStats.views365 = Number(document.getElementById('inputStatViews365').value || 0);
+      ytChannelStats.watchHours = Number(document.getElementById('inputStatWatchHours').value || 0);
+      ytChannelStats.apiKey = document.getElementById('inputStatApiKey').value.trim();
+
+      saveYouTubeStatsLocal();
+      renderYouTubeStats();
+
+      if (firebaseDb) {
+        firebaseDb.ref('youtube_studio/stats').set(ytChannelStats).catch(err => console.warn('Sync stats error:', err));
+      }
+
+      closeYtStatsModal();
+      alert('Statistik YouTube Neilverse berhasil diperbarui!');
+
+      if (ytChannelStats.apiKey) {
+        fetchLiveYouTubeData();
+      }
+    }
+
+    // Fetch Live dari YouTube Data API Resmi Google
+    async function fetchLiveYouTubeData() {
+      const apiKey = ytChannelStats.apiKey || "AIzaSyCZVV2UWawbiToyhZi7Sc9wj5HgCQ1va2E";
+      const channelId = NEILVERSE_CHANNEL_ID;
+      if (!apiKey) return;
+
+      try {
+        // Fetch Statistik Channel (Subscribers Live, Total Views Channel Live)
+        const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&id=${channelId}&key=${apiKey}`;
+        const res = await fetch(channelUrl);
+        const data = await res.json();
+
+        if (data.items && data.items.length > 0) {
+          const ch = data.items[0];
+          const stats = ch.statistics || {};
+          // Update subscriber live
+          ytChannelStats.subscribers = Number(stats.subscriberCount || ytChannelStats.subscribers);
+          // Update viewCount channel live
+          if (!ytChannelStats.views365 || ytChannelStats.views365 === 0) {
+            ytChannelStats.views365 = Number(stats.viewCount || 0);
+          }
+          saveYouTubeStatsLocal();
+          renderYouTubeStats();
+        } else if (data.error) {
+          console.warn('YouTube API Response Notice:', data.error.message);
+        }
+      } catch (err) {
+        console.warn('Gagal fetch YouTube API live:', err);
+      }
+    }
+
+    // Modal Player
+    function playYouTubeVideo(videoId, title, meta) {
+      document.getElementById('modalVideoTitle').textContent = title || 'Video Neilverse';
+      document.getElementById('modalVideoMeta').textContent = meta || '';
+      document.getElementById('ytPlayerIframe').src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
+
+      const modal = document.getElementById('modalYouTubePlayer');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('modalYouTubePlayer');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.getElementById('ytPlayerIframe').src = '';
+    }
+
+    function refreshYouTubeData() {
+      fetchLiveYouTubeData();
+      renderYouTubeStats();
+      renderYouTubeFeed();
+      alert('Data analitik YouTube Neilverse telah disegarkan secara live!');
+    }
+
+    // Sync Owner Action Buttons in YouTube Tab
+    function updateYouTubeOwnerButtons() {
+      const btnAdd = document.getElementById('btnYtAddVideo');
+      const btnStats = document.getElementById('btnYtEditStats');
+      const btnClear = document.getElementById('btnYtClearAll');
+      const tabAllOwner = document.getElementById('ySubTabAllOwner');
+
+      if (btnAdd) {
+        if (isOwner) btnAdd.classList.remove('hidden');
+        else btnAdd.classList.add('hidden');
+      }
+      if (btnStats) {
+        if (isOwner) btnStats.classList.remove('hidden');
+        else btnStats.classList.add('hidden');
+      }
+      if (btnClear) {
+        if (isOwner) btnClear.classList.remove('hidden');
+        else btnClear.classList.add('hidden');
+      }
+      if (tabAllOwner) {
+        if (isOwner) tabAllOwner.classList.remove('hidden');
+        else {
+          tabAllOwner.classList.add('hidden');
+          if (currentYtSubTab === 'all_owner') {
+            setYtSubCategoryTab('mv');
+          }
+        }
+      }
+    }
+
     // DOM Ready
     window.addEventListener('DOMContentLoaded', () => {
-      // Set Max Date Picker to Today (Strict: No future dates)
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayLocal = getLocalDateString(new Date());
       const datePicker = document.getElementById('txDate');
-      datePicker.max = todayStr;
-      datePicker.value = todayStr;
+      datePicker.max = todayLocal;
+      datePicker.value = todayLocal;
 
+      const editDatePicker = document.getElementById('editTxDate');
+      editDatePicker.max = todayLocal;
+
+      initTheme();
       setFormCategoryType('INCOME');
       loadInitialData();
       renderChangelogs();
       refreshAllUI();
       initFirebase();
       updateConverter();
+      initYouTubeData();
+
+      // Start Live Clock
+      updateLiveClock();
+      setInterval(updateLiveClock, 1000);
     });
   </script>
 </body>
