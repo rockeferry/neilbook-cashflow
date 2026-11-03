@@ -12,6 +12,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
+  <!-- Firebase Realtime Database SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
   <!-- Tailwind CSS & Fonts & Icons & Chart.js -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -111,8 +114,12 @@
       </div>
 
       <div class="flex items-center gap-2">
+        <div id="cloudSyncBadge" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold glass-card border border-white/10 text-slate-300">
+          <span id="cloudSyncDot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="cloudSyncText">Cloud Sync</span>
+        </div>
         <button id="btnViewOnlyToggle" class="px-3 py-1.5 rounded-xl text-xs font-semibold glass-card border border-white/10 text-slate-300 hover:text-white flex items-center gap-1.5 transition">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
           <span id="viewModeText">Mode Edit</span>
         </button>
         <button id="btnExportModal" class="p-2 rounded-xl glass-card text-slate-300 hover:text-cyan-400 transition" title="Backup / Ekspor Data">
@@ -344,6 +351,20 @@
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
+    // Firebase Configuration (Dedicated Neilbook Cashflow Project)
+    const FIREBASE_CONFIG = {
+      apiKey: "AIzaSyC1FV3_88yjLegMMXvTAZVIPjGGsVDrBtk",
+      authDomain: "neilbook-cashflow.firebaseapp.com",
+      databaseURL: "https://neilbook-cashflow-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "neilbook-cashflow",
+      storageBucket: "neilbook-cashflow.firebasestorage.app",
+      messagingSenderId: "855150342781",
+      appId: "1:855150342781:web:a73bd42d34e8b7d3abb714"
+    };
+
+    let firebaseDb = null;
+    let rtdbRef = null;
+
     // State Management
     const STORAGE_KEY = 'neilbook_cashflow_records_v2';
     const VIEW_MODE_KEY = 'neilbook_cashflow_view_mode';
@@ -352,6 +373,52 @@
     let currentType = 'INCOME';
     let isViewOnly = false;
     let chartInstance = null;
+
+    function initFirebase() {
+      try {
+        const app = firebase.apps.length ? firebase.app() : firebase.initializeApp(FIREBASE_CONFIG);
+        firebaseDb = firebase.database();
+        rtdbRef = firebaseDb.ref('cashflow/transactions');
+        
+        // Listener realtime: sinkronisasi otomatis HP dan laptop
+        rtdbRef.on('value', snapshot => {
+          const val = snapshot.val();
+          if (val && typeof val === 'object') {
+            transactions = Object.values(val);
+          } else if (val === null && transactions.length > 0) {
+            // Jika cloud kosong tapi lokal ada data, upload data lokal ke cloud
+            transactions.forEach(t => {
+              if (t && t.id) rtdbRef.child(t.id).set(t).catch(() => {});
+            });
+          }
+          saveLocalCache();
+          renderMetrics();
+          renderTransactions();
+          updateChart();
+          updateCloudSyncStatus(true);
+        }, err => {
+          console.warn('Firebase sync offline/restricted:', err);
+          updateCloudSyncStatus(false);
+        });
+      } catch (err) {
+        console.warn('Firebase init offline:', err);
+        updateCloudSyncStatus(false);
+      }
+    }
+
+    function updateCloudSyncStatus(online) {
+      const dot = document.getElementById('cloudSyncDot');
+      const text = document.getElementById('cloudSyncText');
+      if (dot && text) {
+        if (online) {
+          dot.className = 'w-2 h-2 rounded-full bg-emerald-400 animate-pulse';
+          text.textContent = 'Cloud Terhubung';
+        } else {
+          dot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          text.textContent = 'Mode Lokal';
+        }
+      }
+    }
 
     // Formatter Rupiah
     function formatIDR(amount) {
@@ -362,14 +429,18 @@
       }).format(amount);
     }
 
-    // Init Data
+    function saveLocalCache() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+      } catch (_) {}
+    }
+
     function loadData() {
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
           transactions = JSON.parse(stored);
         } else {
-          // Data awal bawaan / contoh portofolio
           transactions = [
             {
               id: 'tx_init_1',
@@ -390,10 +461,9 @@
               timestamp: Date.now() - 86400000 * 1
             }
           ];
-          saveData();
+          saveLocalCache();
         }
       } catch (e) {
-        console.error('Error loadData', e);
         transactions = [];
       }
 
@@ -401,8 +471,21 @@
       updateViewModeUI();
     }
 
-    function saveData() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+    async function syncToFirebase(txId, txDataOrNull) {
+      saveLocalCache();
+      if (rtdbRef && txId) {
+        try {
+          if (txDataOrNull === null) {
+            await rtdbRef.child(txId).remove();
+          } else {
+            await rtdbRef.child(txId).set(txDataOrNull);
+          }
+          updateCloudSyncStatus(true);
+        } catch (e) {
+          console.warn('Sync to Firebase error:', e);
+          updateCloudSyncStatus(false);
+        }
+      }
     }
 
     // Render Metrics & Valuation
@@ -508,14 +591,14 @@
     }
 
     // Delete TX
-    window.deleteTransaction = function(id) {
+    window.deleteTransaction = async function(id) {
       if (isViewOnly) return;
-      if (confirm('Hapus transaksi ini?')) {
+      if (confirm('Hapus transaksi ini dari pembukuan Cloud?')) {
         transactions = transactions.filter(t => t.id !== id);
-        saveData();
         renderMetrics();
         renderTransactions();
         updateChart();
+        await syncToFirebase(id, null);
       }
     };
 
@@ -598,11 +681,11 @@
       };
 
       transactions.unshift(newTx);
-      saveData();
       renderMetrics();
       renderTransactions();
       updateChart();
       closeAddModal();
+      syncToFirebase(newTx.id, newTx);
     });
 
     // Search and Filter
@@ -769,6 +852,7 @@
       renderTransactions();
       updateMarketPrices();
       setInterval(updateMarketPrices, 60000);
+      initFirebase();
     });
   </script>
 </body>
