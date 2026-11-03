@@ -27,12 +27,23 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Inisialisasi Project & Dependensi
+      - name: Buat Konfigurasi Capacitor & Inisialisasi
         run: |
           npm init -y
           npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "Smartphone Dev" "com.neilverse.smartphonedev" --web-dir .
+          
+          # Membuat file capacitor.config.json secara langsung agar aman tanpa interaksi CLI
+          cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.rockeferry.neilbookcashflow",
+            "appName": "Neilbook Cashflow",
+            "webDir": ".",
+            "bundledWebRuntime": false
+          }
+          EOF
+
           npx cap add android
+          npx cap sync android
 
       - name: Build Debug APK
         run: |
@@ -40,8 +51,8 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: Upload APK Hasil Bersih
+      - name: Upload APK Hasil Build
         uses: actions/upload-artifact@v4
         with:
-          name: SmartphoneDev-APK
+          name: NeilbookCashflow-APK
           path: android/app/build/outputs/apk/debug/app-debug.apk
