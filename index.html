@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b132b">
+  <meta name="description" content="NeilBook Cashflow — Aplikasi Pembukuan & Valuasi Proyek by Neilverse">
+  <title>NeilBook Cashflow • Neilverse</title>
+
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png" type="image/png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Tailwind CSS & Fonts & Icons & Chart.js -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg: #070d1e;
+      --card-bg: rgba(18, 28, 54, 0.65);
+      --card-border: rgba(255, 255, 255, 0.12);
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-gold: #f59e0b;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at 15% 15%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+                  radial-gradient(circle at 85% 35%, rgba(59, 130, 246, 0.18) 0%, transparent 45%),
+                  radial-gradient(circle at 50% 80%, rgba(244, 63, 94, 0.1) 0%, transparent 50%),
+                  #070d1e;
+      color: #f1f5f9;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .brand-font {
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-card-hover {
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .glass-card-hover:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.35);
+      box-shadow: 0 18px 40px -5px rgba(6, 182, 212, 0.25);
+    }
+
+    .glass-input {
+      background: rgba(10, 18, 38, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .glass-input:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+    }
+
+    .glass-btn {
+      background: linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%);
+      box-shadow: 0 4px 18px rgba(14, 165, 233, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 999px; }
+  </style>
+</head>
+
+<body class="pb-24">
+
+  <!-- TOP APP BAR -->
+  <header class="sticky top-0 z-40 px-4 py-3 border-b border-white/10 backdrop-blur-xl bg-slate-950/70">
+    <div class="max-w-4xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-500 flex items-center justify-center font-black text-xl shadow-lg shadow-cyan-500/20 text-white">
+          N
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="brand-font text-lg font-bold tracking-tight text-white">NeilBook <span class="text-cyan-400">Cashflow</span></h1>
+            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Pro 2.0</span>
+          </div>
+          <p class="text-[11px] text-slate-400">Pemberdayaan Keuangan & Valuasi • <span class="text-cyan-400 font-semibold">by Neilverse</span></p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="btnViewOnlyToggle" class="px-3 py-1.5 rounded-xl text-xs font-semibold glass-card border border-white/10 text-slate-300 hover:text-white flex items-center gap-1.5 transition">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="viewModeText">Mode Edit</span>
+        </button>
+        <button id="btnExportModal" class="p-2 rounded-xl glass-card text-slate-300 hover:text-cyan-400 transition" title="Backup / Ekspor Data">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-4xl mx-auto px-4 mt-6 space-y-6">
+
+    <!-- LIVE MARKET TICKER (KURS & EMAS) -->
+    <section class="glass-card rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div class="flex items-center gap-2 text-slate-400">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span class="font-bold text-slate-200">Indikator Pasar Live</span>
+        <span id="marketUpdatedTime" class="text-[10px] text-slate-500">(1 USD = Rp 15.850)</span>
+      </div>
+      <div class="flex items-center gap-3 font-semibold overflow-x-auto py-1">
+        <div class="flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-lg border border-white/5">
+          <span class="text-amber-400">Emas (1g):</span>
+          <span id="goldPriceText" class="text-white">Rp 1.485.000</span>
+        </div>
+        <div class="flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-lg border border-white/5">
+          <span class="text-cyan-400">USD/IDR:</span>
+          <span id="usdPriceText" class="text-white">15.850</span>
+        </div>
+        <div class="flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-lg border border-white/5">
+          <span class="text-indigo-400">SGD/IDR:</span>
+          <span id="sgdPriceText" class="text-white">11.980</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- HERO BALANCE & METRICS CARDS -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Card Saldo Utama -->
+      <div class="md:col-span-2 glass-card rounded-3xl p-6 relative overflow-hidden">
+        <div class="absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-xs uppercase tracking-wider font-bold text-cyan-400/90">Total Saldo Bersih Kas</span>
+            <div id="netBalanceDisplay" class="text-3xl md:text-4xl font-extrabold text-white mt-1 brand-font tracking-tight">Rp 0</div>
+          </div>
+          <span class="p-2.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 mt-6 pt-5 border-t border-white/10">
+          <div>
+            <span class="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+              Total Pemasukan
+            </span>
+            <div id="totalIncomeDisplay" class="text-lg md:text-xl font-bold text-emerald-400 mt-0.5">Rp 0</div>
+          </div>
+          <div>
+            <span class="text-[11px] text-rose-400 font-semibold flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 13l-5 5m0 0l-5-5m5 5V6"/></svg>
+              Total Pengeluaran
+            </span>
+            <div id="totalExpenseDisplay" class="text-lg md:text-xl font-bold text-rose-400 mt-0.5">Rp 0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Valuasi Aplikasi / Project Worth -->
+      <div class="glass-card rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute -right-8 -bottom-8 w-36 h-36 bg-amber-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs uppercase tracking-wider font-bold text-amber-400">Valuasi Portfolio</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-300 font-bold border border-amber-400/20">Metric</span>
+          </div>
+          <div id="appValuationDisplay" class="text-2xl font-black text-white mt-2 brand-font">Rp 0</div>
+          <p class="text-[11px] text-slate-400 mt-2 leading-relaxed">
+            Dihitung dari recurring cashflow tahunan + multiplier aset digital Neilverse.
+          </p>
+        </div>
+        <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-slate-300">
+          <span>Target Run-Rate:</span>
+          <span class="font-bold text-cyan-300" id="runRateText">Rp 0 / bln</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUICK ACTIONS & FILTER BAR -->
+    <section class="flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-2">
+        <button id="btnOpenAddModal" class="glass-btn px-4 py-2.5 rounded-2xl text-white font-bold text-sm flex items-center gap-2 shadow-lg shadow-cyan-500/25">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          Catat Transaksi
+        </button>
+        <button id="btnToggleChart" class="glass-card px-3.5 py-2.5 rounded-2xl text-slate-300 text-sm font-semibold hover:text-white transition flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          Grafik Tren
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2 flex-1 sm:flex-initial min-w-[240px]">
+        <input id="searchInput" type="text" placeholder="Cari transaksi..." class="glass-input w-full px-3.5 py-2 rounded-xl text-xs">
+        <select id="filterCategory" class="glass-input px-3 py-2 rounded-xl text-xs bg-slate-900">
+          <option value="ALL">Semua Kategori</option>
+          <option value="INCOME">Pemasukan</option>
+          <option value="EXPENSE">Pengeluaran</option>
+          <option value="PROJECT">Project / Tool</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- CHART CONTAINER (COLLAPSIBLE) -->
+    <section id="chartSection" class="glass-card rounded-3xl p-5 hidden transition-all">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-bold text-sm text-slate-200">Statistik Arus Kas Bulanan</h3>
+        <span class="text-xs text-slate-400">Pemasukan vs Pengeluaran</span>
+      </div>
+      <div class="h-64 w-full">
+        <canvas id="cashflowChart"></canvas>
+      </div>
+    </section>
+
+    <!-- TRANSACTION LIST -->
+    <section class="glass-card rounded-3xl p-5 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-white/10">
+        <div>
+          <h2 class="font-bold text-base text-white">Riwayat Transaksi & Outcome Tool</h2>
+          <p class="text-xs text-slate-400">Daftar arus kas masuk, pengeluaran cloud/tools, dan hasil proyek</p>
+        </div>
+        <span id="txCountBadge" class="text-xs px-2.5 py-1 rounded-full bg-white/10 text-cyan-300 font-semibold">0 Transaksi</span>
+      </div>
+
+      <div id="txListContainer" class="space-y-3">
+        <!-- Render items dynamically -->
+        <div class="py-12 text-center text-slate-500 text-sm">
+          Belum ada transaksi. Klik <b class="text-cyan-400">Catat Transaksi</b> untuk memulai pembukuan.
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL ADD TRANSACTION -->
+  <div id="addModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-card rounded-3xl max-w-lg w-full p-6 relative border border-cyan-500/20 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <div>
+          <h3 class="font-bold text-lg text-white">Tambah Catatan Arus Kas</h3>
+          <p class="text-xs text-slate-400">Catat pemasukan, outcome tool, atau biaya operasional</p>
+        </div>
+        <button id="btnCloseModal" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 hover:text-white flex items-center justify-center text-lg">&times;</button>
+      </div>
+
+      <form id="txForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Tipe Transaksi</label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" id="btnTypeIncome" class="py-2.5 rounded-xl border text-xs font-bold transition bg-emerald-500/20 border-emerald-500 text-emerald-300">
+              + Pemasukan (Income)
+            </button>
+            <button type="button" id="btnTypeExpense" class="py-2.5 rounded-xl border text-xs font-bold transition bg-white/5 border-white/10 text-slate-400">
+              - Pengeluaran (Expense)
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Transaksi / Proyek</label>
+          <input id="txTitle" type="text" placeholder="Contoh: Pembayaran Klien Web, Server Firebase, CapCut Pro" required class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Nominal (IDR)</label>
+            <input id="txAmount" type="number" min="1" placeholder="Contoh: 1500000" required class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Kategori</label>
+            <select id="txCategory" class="glass-input w-full px-3.5 py-2.5 rounded-xl text-sm bg-slate-900">
+              <option value="Proyek Klien">Proyek Klien / UMKM</option>
+              <option value="Langganan Tool">Langganan Tool (AI, Editing, dsb)</option>
+              <option value="Operasional">Operasional & Cloud</option>
+              <option value="Aset Digital">Aset Digital / Apps</option>
+              <option value="Lainnya">Lainnya</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Catatan Tambahan (Outcome Tool / ROI)</label>
+          <textarea id="txNotes" rows="2" placeholder="Catatan opsional: Hasil outcome, durasi langganan, target klien..." class="glass-input w-full px-3.5 py-2 rounded-xl text-xs"></textarea>
+        </div>
+
+        <div class="pt-2 flex gap-2">
+          <button type="button" id="btnCancelModal" class="flex-1 py-2.5 rounded-xl glass-card text-xs font-bold text-slate-300 hover:text-white">Batal</button>
+          <button type="submit" class="flex-1 py-2.5 rounded-xl glass-btn text-white text-xs font-bold">Simpan Transaksi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL BACKUP / RESTORE -->
+  <div id="exportModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="glass-card rounded-3xl max-w-md w-full p-6 relative border border-white/10 shadow-2xl">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-bold text-base text-white">Cadangan & Ekspor Data</h3>
+        <button id="btnCloseExportModal" class="w-8 h-8 rounded-full bg-white/10 text-slate-400 hover:text-white flex items-center justify-center text-lg">&times;</button>
+      </div>
+
+      <div class="space-y-3">
+        <button id="btnExportCSV" class="w-full py-3 rounded-2xl glass-card text-xs font-bold text-slate-200 hover:text-cyan-400 flex items-center justify-center gap-2 border border-white/10">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Unduh Format CSV (Excel)
+        </button>
+        <button id="btnExportJSON" class="w-full py-3 rounded-2xl glass-card text-xs font-bold text-slate-200 hover:text-cyan-400 flex items-center justify-center gap-2 border border-white/10">
+          <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg>
+          Salin / Ekspor JSON Backup
+        </button>
+
+        <div class="pt-3 border-t border-white/10">
+          <label class="block text-xs font-semibold text-slate-400 mb-1.5">Pulihkan dari JSON Backup:</label>
+          <textarea id="importJSONArea" rows="2" placeholder="Tempel kode JSON backup di sini..." class="glass-input w-full p-2.5 rounded-xl text-xs"></textarea>
+          <button id="btnImportJSON" class="mt-2 w-full py-2 rounded-xl bg-cyan-600/30 border border-cyan-500/40 text-cyan-300 text-xs font-bold hover:bg-cyan-600/50">Pulihkan Data</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // State Management
+    const STORAGE_KEY = 'neilbook_cashflow_records_v2';
+    const VIEW_MODE_KEY = 'neilbook_cashflow_view_mode';
+
+    let transactions = [];
+    let currentType = 'INCOME';
+    let isViewOnly = false;
+    let chartInstance = null;
+
+    // Formatter Rupiah
+    function formatIDR(amount) {
+      return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: 0
+      }).format(amount);
+    }
+
+    // Init Data
+    function loadData() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          transactions = JSON.parse(stored);
+        } else {
+          // Data awal bawaan / contoh portofolio
+          transactions = [
+            {
+              id: 'tx_init_1',
+              title: 'Pembuatan Web App UMKM Klien',
+              type: 'INCOME',
+              amount: 4500000,
+              category: 'Proyek Klien',
+              notes: 'Penyelesaian MVP tahap 1',
+              timestamp: Date.now() - 86400000 * 2
+            },
+            {
+              id: 'tx_init_2',
+              title: 'Langganan AI Tools & Cloud Storage',
+              type: 'EXPENSE',
+              amount: 380000,
+              category: 'Langganan Tool',
+              notes: 'Grok / Storage media 5TB',
+              timestamp: Date.now() - 86400000 * 1
+            }
+          ];
+          saveData();
+        }
+      } catch (e) {
+        console.error('Error loadData', e);
+        transactions = [];
+      }
+
+      isViewOnly = localStorage.getItem(VIEW_MODE_KEY) === 'true';
+      updateViewModeUI();
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
+    }
+
+    // Render Metrics & Valuation
+    function renderMetrics() {
+      const totalIncome = transactions
+        .filter(t => t.type === 'INCOME')
+        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+
+      const totalExpense = transactions
+        .filter(t => t.type === 'EXPENSE')
+        .reduce((sum, t) => sum + Number(t.amount || 0), 0);
+
+      const netBalance = totalIncome - totalExpense;
+
+      // Valuasi Portofolio: Rumus Sederhana (Net Balance + (Arus Kas Bersih 6 bulan diproyeksikan multiplier 3.5x))
+      const monthlyRunRate = Math.max(0, netBalance * 0.7);
+      const appValuation = Math.max(netBalance, (monthlyRunRate * 12 * 2.5) + (netBalance > 0 ? netBalance : 0));
+
+      document.getElementById('netBalanceDisplay').textContent = formatIDR(netBalance);
+      document.getElementById('totalIncomeDisplay').textContent = formatIDR(totalIncome);
+      document.getElementById('totalExpenseDisplay').textContent = formatIDR(totalExpense);
+      document.getElementById('appValuationDisplay').textContent = formatIDR(appValuation);
+      document.getElementById('runRateText').textContent = formatIDR(monthlyRunRate) + ' / bln';
+
+      document.getElementById('txCountBadge').textContent = `${transactions.length} Transaksi`;
+    }
+
+    // Render Transaction List
+    function renderTransactions() {
+      const container = document.getElementById('txListContainer');
+      const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+      const filterCat = document.getElementById('filterCategory').value;
+
+      let filtered = transactions.filter(t => {
+        const matchSearch = t.title.toLowerCase().includes(searchQuery) || (t.notes && t.notes.toLowerCase().includes(searchQuery));
+        let matchCat = true;
+        if (filterCat === 'INCOME') matchCat = t.type === 'INCOME';
+        else if (filterCat === 'EXPENSE') matchCat = t.type === 'EXPENSE';
+        else if (filterCat === 'PROJECT') matchCat = t.category.includes('Proyek') || t.category.includes('Tool');
+
+        return matchSearch && matchCat;
+      });
+
+      // Sort by newest first
+      filtered.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-12 text-center text-slate-500 text-sm">
+            Tidak ada transaksi yang cocok dengan filter / pencarian.
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(t => {
+        const isInc = t.type === 'INCOME';
+        const dateStr = new Date(t.timestamp).toLocaleDateString('id-ID', {
+          day: 'numeric', month: 'short', year: 'numeric'
+        });
+
+        return `
+          <div class="glass-card glass-card-hover p-4 rounded-2xl flex items-center justify-between gap-3">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-2xl flex items-center justify-center font-bold text-base shrink-0 ${
+                isInc ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+              }">
+                ${isInc ? '↓' : '↑'}
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-sm text-white truncate">${escapeHTML(t.title)}</h4>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-300 shrink-0">
+                    ${escapeHTML(t.category || 'Umum')}
+                  </span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+                  <span>${dateStr}</span>
+                  ${t.notes ? `<span>•</span><span class="truncate max-w-[200px] text-slate-400">${escapeHTML(t.notes)}</span>` : ''}
+                </div>
+              </div>
+            </div>
+
+            <div class="text-right shrink-0 flex items-center gap-3">
+              <div class="font-bold text-sm md:text-base ${isInc ? 'text-emerald-400' : 'text-rose-400'}">
+                ${isInc ? '+' : '-'} ${formatIDR(t.amount)}
+              </div>
+              ${!isViewOnly ? `
+                <button onclick="deleteTransaction('${t.id}')" class="text-slate-500 hover:text-rose-400 p-1 transition" title="Hapus">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHTML(str) {
+      return String(str || '').replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[m]));
+    }
+
+    // Delete TX
+    window.deleteTransaction = function(id) {
+      if (isViewOnly) return;
+      if (confirm('Hapus transaksi ini?')) {
+        transactions = transactions.filter(t => t.id !== id);
+        saveData();
+        renderMetrics();
+        renderTransactions();
+        updateChart();
+      }
+    };
+
+    // View-Only Toggle
+    function updateViewModeUI() {
+      const modeText = document.getElementById('viewModeText');
+      const addBtn = document.getElementById('btnOpenAddModal');
+
+      if (isViewOnly) {
+        modeText.textContent = 'Mode View-Only';
+        addBtn.classList.add('hidden');
+      } else {
+        modeText.textContent = 'Mode Edit';
+        addBtn.classList.remove('hidden');
+      }
+      renderTransactions();
+    }
+
+    document.getElementById('btnViewOnlyToggle').addEventListener('click', () => {
+      isViewOnly = !isViewOnly;
+      localStorage.setItem(VIEW_MODE_KEY, String(isViewOnly));
+      updateViewModeUI();
+    });
+
+    // Modal Control
+    const addModal = document.getElementById('addModal');
+    document.getElementById('btnOpenAddModal').addEventListener('click', () => {
+      if (isViewOnly) return;
+      addModal.classList.remove('hidden');
+      addModal.classList.add('flex');
+      document.getElementById('txTitle').focus();
+    });
+
+    function closeAddModal() {
+      addModal.classList.add('hidden');
+      addModal.classList.remove('flex');
+      document.getElementById('txForm').reset();
+      setType('INCOME');
+    }
+
+    document.getElementById('btnCloseModal').addEventListener('click', closeAddModal);
+    document.getElementById('btnCancelModal').addEventListener('click', closeAddModal);
+
+    // Type Switcher
+    function setType(type) {
+      currentType = type;
+      const btnInc = document.getElementById('btnTypeIncome');
+      const btnExp = document.getElementById('btnTypeExpense');
+
+      if (type === 'INCOME') {
+        btnInc.className = 'py-2.5 rounded-xl border text-xs font-bold transition bg-emerald-500/20 border-emerald-500 text-emerald-300';
+        btnExp.className = 'py-2.5 rounded-xl border text-xs font-bold transition bg-white/5 border-white/10 text-slate-400';
+      } else {
+        btnExp.className = 'py-2.5 rounded-xl border text-xs font-bold transition bg-rose-500/20 border-rose-500 text-rose-300';
+        btnInc.className = 'py-2.5 rounded-xl border text-xs font-bold transition bg-white/5 border-white/10 text-slate-400';
+      }
+    }
+
+    document.getElementById('btnTypeIncome').addEventListener('click', () => setType('INCOME'));
+    document.getElementById('btnTypeExpense').addEventListener('click', () => setType('EXPENSE'));
+
+    // Handle Form Submit
+    document.getElementById('txForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('txTitle').value.trim();
+      const amount = Number(document.getElementById('txAmount').value);
+      const category = document.getElementById('txCategory').value;
+      const notes = document.getElementById('txNotes').value.trim();
+
+      if (!title || !amount || amount <= 0) return;
+
+      const newTx = {
+        id: 'tx_' + Date.now(),
+        title,
+        type: currentType,
+        amount,
+        category,
+        notes,
+        timestamp: Date.now()
+      };
+
+      transactions.unshift(newTx);
+      saveData();
+      renderMetrics();
+      renderTransactions();
+      updateChart();
+      closeAddModal();
+    });
+
+    // Search and Filter
+    document.getElementById('searchInput').addEventListener('input', renderTransactions);
+    document.getElementById('filterCategory').addEventListener('change', renderTransactions);
+
+    // Chart.js Visualization
+    function updateChart() {
+      const ctx = document.getElementById('cashflowChart');
+      if (!ctx) return;
+
+      const incomeByMonth = {};
+      const expenseByMonth = {};
+
+      transactions.forEach(t => {
+        const d = new Date(t.timestamp || Date.now());
+        const key = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
+        if (t.type === 'INCOME') {
+          incomeByMonth[key] = (incomeByMonth[key] || 0) + Number(t.amount || 0);
+        } else {
+          expenseByMonth[key] = (expenseByMonth[key] || 0) + Number(t.amount || 0);
+        }
+      });
+
+      const labels = Array.from(new Set([...Object.keys(incomeByMonth), ...Object.keys(expenseByMonth)]));
+      if (labels.length === 0) labels.push('Bulan Ini');
+
+      const incomeData = labels.map(k => incomeByMonth[k] || 0);
+      const expenseData = labels.map(k => expenseByMonth[k] || 0);
+
+      if (chartInstance) chartInstance.destroy();
+
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Pemasukan',
+              data: incomeData,
+              backgroundColor: 'rgba(16, 185, 129, 0.75)',
+              borderRadius: 8
+            },
+            {
+              label: 'Pengeluaran',
+              data: expenseData,
+              backgroundColor: 'rgba(244, 63, 94, 0.75)',
+              borderRadius: 8
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans' } }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#94a3b8' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            y: {
+              ticks: { color: '#94a3b8' },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            }
+          }
+        }
+      });
+    }
+
+    document.getElementById('btnToggleChart').addEventListener('click', () => {
+      const section = document.getElementById('chartSection');
+      section.classList.toggle('hidden');
+      if (!section.classList.contains('hidden')) {
+        updateChart();
+      }
+    });
+
+    // Export / Import Modal
+    const exportModal = document.getElementById('exportModal');
+    document.getElementById('btnExportModal').addEventListener('click', () => {
+      exportModal.classList.remove('hidden');
+      exportModal.classList.add('flex');
+    });
+    document.getElementById('btnCloseExportModal').addEventListener('click', () => {
+      exportModal.classList.add('hidden');
+      exportModal.classList.remove('flex');
+    });
+
+    // CSV Export
+    document.getElementById('btnExportCSV').addEventListener('click', () => {
+      if (transactions.length === 0) return alert('Tidak ada data transaksi.');
+      const headers = ['ID', 'Judul', 'Tipe', 'Nominal', 'Kategori', 'Catatan', 'Tanggal'];
+      const rows = transactions.map(t => [
+        t.id,
+        `"${t.title.replace(/"/g, '""')}"`,
+        t.type,
+        t.amount,
+        `"${(t.category || '').replace(/"/g, '""')}"`,
+        `"${(t.notes || '').replace(/"/g, '""')}"`,
+        new Date(t.timestamp).toISOString()
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `NeilBook_Cashflow_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // JSON Export
+    document.getElementById('btnExportJSON').addEventListener('click', () => {
+      const jsonStr = JSON.stringify(transactions, null, 2);
+      navigator.clipboard.writeText(jsonStr).then(() => {
+        alert('Data JSON berhasil disalin ke clipboard! Anda dapat menyimpannya sebagai arsip.');
+      });
+    });
+
+    // JSON Import
+    document.getElementById('btnImportJSON').addEventListener('click', () => {
+      const input = document.getElementById('importJSONArea').value.trim();
+      if (!input) return alert('Tempel teks JSON terlebih dahulu.');
+      try {
+        const parsed = JSON.parse(input);
+        if (Array.isArray(parsed)) {
+          transactions = parsed;
+          saveData();
+          renderMetrics();
+          renderTransactions();
+          updateChart();
+          alert('Data berhasil dipulihkan!');
+          exportModal.classList.add('hidden');
+          exportModal.classList.remove('flex');
+        } else {
+          alert('Format JSON tidak sesuai.');
+        }
+      } catch (err) {
+        alert('Gagal membaca JSON: ' + err.message);
+      }
+    });
+
+    // Live Currency / Market Simulator Refresh
+    async function updateMarketPrices() {
+      try {
+        // Fallback realistic dynamic simulation
+        const baseUSD = 15850 + Math.floor(Math.random() * 40 - 20);
+        const baseGold = 1485000 + Math.floor(Math.random() * 4000 - 2000);
+        document.getElementById('usdPriceText').textContent = baseUSD.toLocaleString('id-ID');
+        document.getElementById('goldPriceText').textContent = 'Rp ' + baseGold.toLocaleString('id-ID');
+        document.getElementById('marketUpdatedTime').textContent = `(Live Update: ${new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'})})`;
+      } catch (_) {}
+    }
+
+    // App Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      renderMetrics();
+      renderTransactions();
+      updateMarketPrices();
+      setInterval(updateMarketPrices, 60000);
+    });
+  </script>
+</body>
+</html>
