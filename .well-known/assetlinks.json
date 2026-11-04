@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.github.rockeferry.twa",
+        "sha256_cert_fingerprints": ["AC:D2:26:EF:54:89:F5:C7:3C:50:A1:DD:B2:E8:91:6A:DA:73:67:57:68:88:EF:1F:06:5A:84:65:8C:B9:DE:B4"]
+      }
+    }]
