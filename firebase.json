@@ -1,0 +1,20 @@
+{
+  "cashflow": {
+    "transactions": {
+      "tx_init_1": {
+        "id": "tx_init_1",
+        "title": "Saldo Awal Kas",
+        "type": "INCOME",
+        "amount": 1000000,
+        "category": "Operasional",
+        "notes": "Modal awal kas",
+        "timestamp": 1730592000000
+      }
+    },
+    "settings": {
+      "appName": "NeilBook Cashflow",
+      "currency": "IDR",
+      "valuationMultiplier": 3.5
+    }
+  }
+}

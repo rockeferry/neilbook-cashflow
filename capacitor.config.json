@@ -1,0 +1,15 @@
+{
+  "appId": "com.neilverse.neilbookcashflow",
+  "appName": "NeilBook Cashflow",
+  "webDir": "www",
+  "backgroundColor": "#070d1e",
+  "android": {
+    "path": "android"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "backgroundColor": "#070d1e"
+    }
+  }
+}
